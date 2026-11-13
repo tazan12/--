@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),vm=require(
 function setup(){
  const elements=new Map(),timers=new Map();let seq=0;
  class Element{
-  constructor(){this.attrs={};this.listeners={};this.children=[];this.textContent='';this.hidden=false;this.value='';this.classList={toggle:()=>false};}
+  constructor(){this.attrs={};this.dataset={};this.listeners={};this.children=[];this.textContent='';this.hidden=false;this.value='';this.classList={toggle:()=>false};}
   setAttribute(k,v){this.attrs[k]=String(v)}getAttribute(k){return this.attrs[k]??null}removeAttribute(k){delete this.attrs[k]}
   append(...v){this.children.push(...v)}replaceChildren(...v){this.children=v}scrollIntoView(){}
   addEventListener(k,f){(this.listeners[k]??=[]).push(f)}dispatchEvent(e){for(const f of this.listeners[e.type]||[])f(e)}
