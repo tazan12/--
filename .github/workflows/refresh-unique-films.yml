@@ -1,0 +1,57 @@
+name: DJ Letter - 12 unique classical scenes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refresh-unique-films.py'
+      - '.github/workflows/refresh-unique-films.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dj-letter-unique-video-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh-videos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout DJ Letter source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Confirm bundled encoder
+        run: |
+          ffmpeg -version | head -1
+          python3 --version
+
+      - name: Download 12 licensed source videos and render unique scenes
+        run: python3 scripts/refresh-unique-films.py
+
+      - name: Verify different scenes per episode
+        run: |
+          test "$(find docs/assets/films -maxdepth 1 -name 'ep*.mp4' | wc -l)" -eq 12
+          test "$(find docs/assets/films -maxdepth 1 -name 'ep*.webp' | wc -l)" -eq 12
+          python3 - <<'PY'
+          import json
+          m=json.load(open('docs/assets/films/manifest.json'))
+          assert len(m)==12
+          assert len({x['source_id'] for x in m})==12
+          assert len({x['poster_hash'] for x in m})==12
+          print('PASS: 12 videos, 12 unique sources and posters')
+          PY
+
+      - name: Commit verified scene library
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/films/
+          if ! git diff --cached --quiet; then
+            git commit -m "Replace repeated video scenes with 12 unique Mixkit clips"
+            git push origin HEAD:main
+          fi
