@@ -7,7 +7,7 @@
     $('stageStatus').textContent = '이야기 정보를 불러오지 못했습니다. 페이지를 새로 열어 주세요.';
     return;
   }
-  const RELEASE = '20261114-stable2';
+  const RELEASE = '20261114-stable3';
   const pad = n => String(n).padStart(2, '0');
   const mediaPath = (kind, n, ext) => `./assets/${kind}/ep${pad(n + 1)}.${ext}?v=${RELEASE}`;
   const clock = n => Number.isFinite(n) && n >= 0 ? `${Math.floor(n / 60)}:${pad(Math.floor(n % 60))}` : '0:00';

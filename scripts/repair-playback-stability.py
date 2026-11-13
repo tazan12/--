@@ -8,7 +8,7 @@ import subprocess, json, re, os, hashlib
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'docs'
 FILMS = DOCS / 'assets/films'
-VERSION = '20261114-stable2'
+VERSION = '20261114-stable3'
 
 
 def transcode(n):

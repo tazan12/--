@@ -4,9 +4,9 @@
   const $ = id => document.getElementById(id);
   const video = $('film'), image = $('filmMotion'), surface = $('filmWindow');
   if (!video || !image || !surface) return;
-  const RELEASE = '20261114-stable2';
+  const RELEASE = '20261114-stable3';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  let episode = 0, epoch = 0, still = reduce.matches, explicitStill = false;
+  let episode = 0, epoch = 0, still = false, explicitStill = false;
   let mode = 'loading', pending = false, failed = false, retries = 0;
   let lastProgress = performance.now(), lastTime = -1, frameCount = 0, callback = 0;
   let motionURL = '', posterURL = '', startedAt = 0;
@@ -140,11 +140,8 @@
     still = $('still').checked; explicitStill = still;
     if (still) pause(); else { lastProgress = performance.now(); resume(); }
   });
-  reduce.addEventListener?.('change', event => {
-    if (explicitStill) return;
-    still = event.matches; $('still').checked = still;
-    if (still) pause(); else resume();
-  });
+  // Reduced-motion is respected for UI transitions in CSS. The requested
+  // content plays automatically; only an explicit session choice pauses it.
   window.DJ_SCENERY = {
     setEpisode, resume, userStart,
     report: () => ({release: RELEASE, episode: episode + 1, mode, still,
