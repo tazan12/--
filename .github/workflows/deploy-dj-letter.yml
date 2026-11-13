@@ -4,18 +4,16 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
+      - 'tests/mind-store.test.cjs'
       - '.github/workflows/deploy-dj-letter.yml'
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: github-pages
   cancel-in-progress: true
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -25,10 +23,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate the diary and player before publishing
+        run: |
+          node --check docs/player.js
+          node --check docs/scenery.js
+          node --check docs/mind-store.js
+          node --check docs/mind-journal.js
+          node --check docs/sw.js
+          node --test tests/mind-store.test.cjs
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Upload static site
         uses: actions/upload-pages-artifact@v4
         with:
