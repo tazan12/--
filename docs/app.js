@@ -7,6 +7,42 @@ dj.preload='none';music.preload='none'; music.volume=.7;
 const moods=['전체','사랑','그리움','위로','휴식','회복','고요','상실','기억','동행'];
 let mood='전체',fadeTimer=null,scheduled=null;
 const videoRoot='./assets/films/';
+const videoVersion='?v=20261114-unique';
+const videoScenes=["달빛이 머무는 밤","꽃잎이 흔들리는 오후","창가에 내리는 비","흰 꽃의 작은 인사","별빛이 흐르는 호수","분홍빛 꽃바람","해변에 닿는 파도","산과 아침 구름","저녁빛을 담은 바다","햇살 가득한 초원","눈 내리는 겨울 숲","느리게 지나가는 구름"];
+let videoToken=0;
+function filmStatus(state){
+ const stage=$('stage');
+ stage.classList.toggle('film-is-playing',state==='playing');
+ stage.classList.toggle('film-has-error',state==='error');
+ const labels={playing:'풍경 영상 재생 중',loading:'풍경 영상을 준비하고 있어요',paused:'영상을 터치하여 재생',blocked:'자동재생 제한 · 재생 버튼을 눌러주세요',error:'영상을 불러오지 못했습니다'};
+ $('filmState').textContent=labels[state]||'영상 준비 중';
+ $('filmToggle').textContent=state==='playing'?'Ⅱ':'▶';
+ $('filmToggle').setAttribute('aria-label',state==='playing'?'영상 일시정지':'영상 재생');
+ $('filmToggle').title=state==='playing'?'영상 일시정지':'영상 재생';
+ $('motion').textContent=state==='playing'?'영상 일시정지':'영상 재생';
+ $('motion').setAttribute('aria-label',state==='playing'?'영상 일시정지':'영상 재생');
+ $('filmFallback').hidden=state!=='error';
+}
+function playFilm(explicit=false){
+ const film=$('film');
+ if(explicit)motionOff=false;
+ if(motionOff){filmStatus('paused');return}
+ film.muted=true; film.playsInline=true;film.setAttribute('webkit-playsinline','');
+ const token=videoToken;
+ const promise=film.play();
+ filmStatus('loading');
+ if(promise&&typeof promise.then==='function'){
+  promise.then(()=>{if(token===videoToken)filmStatus('playing')})
+   .catch(err=>{if(token!==videoToken||err?.name==='AbortError')return;
+    filmStatus(err?.name==='NotAllowedError'?'blocked':'error')});
+ }
+}
+function toggleFilm(){
+ const film=$('film');
+ if(!film.paused&&!film.ended){motionOff=true;film.pause();filmStatus('paused')}
+ else playFilm(true);
+}
+
 const pad=n=>String(n).padStart(2,'0');
 const time=n=>Number.isFinite(n)?Math.floor(n/60)+':'+pad(Math.floor(n%60)):'0:00';
 function toast(s){$('toast').hidden=!s;$('toast').textContent=s;}
@@ -16,7 +52,16 @@ $('stageTitle').textContent=s.title;$('stageEpisode').textContent='LETTER '+pad(
 $('readerTitle').textContent=s.title;$('readerMood').textContent=s.mood+'에 관한 이야기';$('readerText').textContent=s.story;
 $('stageStatus').textContent='이야기를 펼칠 준비가 되었습니다.';$('stagePlay').textContent='▶';$('clock').textContent='0:00';$('duration').textContent='0:00';$('seek').value=0;
 dj.src='./assets/voice/ep'+pad(index+1)+'.mp3';music.src=s.src;
-const film=$('film'),key='ep'+pad(index+1);film.pause();film.poster=videoRoot+key+'.webp';$('filmSource').src=videoRoot+key+'.mp4';film.load();if(!motionOff)film.play().catch(()=>{});
+const film=$('film'),key='ep'+pad(index+1);
+++videoToken;
+film.pause();
+film.poster=videoRoot+key+'.webp'+videoVersion;
+film.src=videoRoot+key+'.mp4'+videoVersion;
+$('filmFallback').href=videoRoot+key+'.mp4'+videoVersion;
+$('filmSceneName').textContent=videoScenes[index];
+film.load();
+filmStatus(motionOff?'paused':'loading');
+if(!motionOff)playFilm();
 renderCards();toast('');
 }
 function start(){audioStop();phase='dj';playing=true;dj.currentTime=0;$('stageStatus').textContent='DJ가 편지를 읽어 드리고 있어요.';$('stagePlay').textContent='Ⅱ';dj.play().catch(()=>{playing=false;toast('음성 재생이 차단됐습니다. 버튼을 다시 눌러 주세요.');$('stagePlay').textContent='▶'})}
@@ -25,16 +70,23 @@ dj.addEventListener('ended',()=>{phase='transition';playing=false;$('stageStatus
 music.addEventListener('ended',()=>{playing=false;$('stageStatus').textContent='음악이 끝났습니다. 여운을 조금 더 느껴 보세요.';$('stagePlay').textContent='▶'});
 function toggle(){if(phase==='idle'||phase==='transition'){start();return}let a=phase==='dj'?dj:music;if(a.paused)a.play().then(()=>{playing=true;$('stagePlay').textContent='Ⅱ'}).catch(()=>toast('재생할 수 없습니다.'));else{a.pause();playing=false;$('stagePlay').textContent='▶'}}
 function renderMoods(){$('moods').replaceChildren(...moods.map(m=>{const b=document.createElement('button');b.textContent=m;b.className=m===mood?'selected':'';b.onclick=()=>{mood=m;renderMoods();renderCards()};return b}))}
-function renderCards(){$('cards').replaceChildren(...stories.map((s,i)=>({s,i})).filter(x=>mood==='전체'||x.s.mood===mood).map(({s,i})=>{const card=document.createElement('button');card.className='dj-card'+(i===index?' active':'');const art=document.createElement('div');art.className='dj-card-art';const img=document.createElement('img');img.loading='lazy';img.alt=s.title+' 풍경 영상 미리보기';img.src=videoRoot+'ep'+pad(i+1)+'.webp';const ep=document.createElement('span');ep.textContent='EP. '+pad(i+1);art.append(img,ep);
+function renderCards(){$('cards').replaceChildren(...stories.map((s,i)=>({s,i})).filter(x=>mood==='전체'||x.s.mood===mood).map(({s,i})=>{const card=document.createElement('button');card.className='dj-card'+(i===index?' active':'');const art=document.createElement('div');art.className='dj-card-art';const img=document.createElement('img');img.loading='lazy';img.alt=s.title+' 풍경 영상 미리보기';img.src=videoRoot+'ep'+pad(i+1)+'.webp'+videoVersion;const ep=document.createElement('span');ep.textContent='EP. '+pad(i+1);art.append(img,ep);
 const body=document.createElement('div');body.className='dj-card-copy';const small=document.createElement('small');small.textContent=s.composer+' · '+s.mood;const title=document.createElement('strong');title.textContent=s.title;const musicName=document.createElement('span');musicName.textContent=s.music;body.append(small,title,musicName);card.append(art,body);card.onclick=()=>{setEpisode(i);scrollTo({top:0,behavior:'smooth'})};return card}))}
 $('mainPlay').onclick=start;$('readerPlay').onclick=start;$('stagePlay').onclick=toggle;$('stageNext').onclick=()=>setEpisode(index+1);$('musicOnly').onclick=beginMusic;
 $('wide').onclick=()=>{let e=$('stage');e.classList.toggle('dj-wide');$('wide').textContent=e.classList.contains('dj-wide')?'▢ 기본 화면':'▣ 영상 크게 보기'};
-$('motion').onclick=()=>{motionOff=!motionOff;const e=$('film');if(motionOff)e.pause();else e.play().catch(()=>{});$('motion').textContent=motionOff?'영상 켜기':'움직임 끄기'};
+$('motion').onclick=toggleFilm;
+$('filmToggle').onclick=toggleFilm;
+$('film').addEventListener('playing',()=>filmStatus('playing'));
+$('film').addEventListener('pause',()=>{if($('film').paused&&!$('film').error)filmStatus('paused')});
+$('film').addEventListener('waiting',()=>{if(!$('film').paused)filmStatus('loading')});
+$('film').addEventListener('stalled',()=>{if(!$('film').paused)filmStatus('loading')});
+$('film').addEventListener('canplay',()=>{if(!motionOff&&$('film').paused)playFilm()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!motionOff&&$('film').paused)playFilm()});
 $('seek').addEventListener('input',()=>{if(phase==='music'&&Number.isFinite(music.duration)&&music.duration>0)music.currentTime=music.duration*Number($('seek').value)/1000});
 music.addEventListener('timeupdate',()=>{$('clock').textContent=time(music.currentTime);$('duration').textContent=time(music.duration);if(Number.isFinite(music.duration)&&music.duration>0)$('seek').value=String(Math.round(1000*music.currentTime/music.duration))});
 dj.addEventListener('error',()=>toast('DJ 음원을 불러올 수 없습니다. 인터넷 연결을 확인해 주세요.'));
 music.addEventListener('error',()=>toast('클래식 음원을 불러올 수 없습니다. 파일 출처를 확인해 주세요.'));
-$('film').addEventListener('error',()=>toast('영상 서버에 연결하지 못했습니다. 기본 이미지를 표시합니다.'));
+$('film').addEventListener('error',()=>{filmStatus('error');toast('풍경 영상에 문제가 생겼습니다. 영상 파일 직접 열기를 이용할 수 있습니다.')});
 try{$('note').value=localStorage.getItem('dj-letter-personal-note')||''}catch{}
 $('noteSave').onclick=()=>{try{localStorage.setItem('dj-letter-personal-note',$('note').value);toast('이 브라우저에 편지를 보관했습니다.')}catch{toast('브라우저 저장이 제한되어 있습니다. 텍스트를 따로 보관해 주세요.')}};
 setEpisode(0);renderMoods();})();
