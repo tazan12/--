@@ -34,3 +34,127 @@ html{scroll-behavior:smooth}body{margin:0;background:#101626;color:#f6eada;font-
 .dj-hero:has(.dj-wide){grid-template-columns:1fr}
 .dj-hero:has(.dj-wide) .dj-intro{display:none}
 @media(max-width:650px){.dj-scene-buttonrow{gap:6px}.dj-stage.dj-wide{min-height:55vh}.dj-progress{gap:6px}}
+
+
+/* v20261114 — film-first presentation and accessible manual playback */
+.dj-stage{
+  isolation:isolate;
+  background-color:#152038;
+  background-image:linear-gradient(180deg,#192741,#131c35) !important;
+}
+.dj-scene-video{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center center;
+  z-index:1!important;
+  opacity:1!important;
+  visibility:visible!important;
+  background:#1b2639;
+  filter:saturate(.91) contrast(1.02) brightness(.92);
+  pointer-events:none;
+}
+.dj-film-shade{
+  z-index:2!important;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,17,32,.30),rgba(10,17,32,.08) 34%,rgba(8,12,24,.55) 60%,rgba(6,9,19,.94) 100%);
+}
+.dj-film-topline{
+  position:absolute;
+  top:19px;
+  left:20px;
+  right:20px;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  pointer-events:none;
+  font-family:Arial,"Malgun Gothic",sans-serif;
+  font-size:11px;
+  letter-spacing:.035em;
+  color:#fff4e6;
+  text-shadow:0 2px 8px #000a;
+}
+.dj-film-live{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 12px;
+  border:1px solid #f4ddba50;
+  border-radius:30px;
+  background:#0b152aaa;
+  backdrop-filter:blur(8px);
+}
+.dj-film-live-dot{
+  display:inline-block;
+  height:7px;
+  width:7px;
+  border-radius:50%;
+  background:#e9c28c;
+  box-shadow:0 0 8px #e9c28c99;
+}
+.dj-film-center-play{
+  position:absolute;
+  left:50%;
+  top:34%;
+  transform:translate(-50%,-50%);
+  z-index:6;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:68px;
+  height:68px;
+  border-radius:50%;
+  border:1px solid #ffe2b9bd;
+  background:#0f1934bd;
+  color:#fff6e9;
+  font:normal 30px Arial,sans-serif;
+  box-shadow:0 5px 28px #0008;
+  backdrop-filter:blur(8px);
+  cursor:pointer;
+  transition:background .2s,transform .2s,opacity .25s;
+}
+.dj-film-center-play:hover{
+  background:#364869e6;
+  transform:translate(-50%,-50%) scale(1.08);
+}
+.dj-stage.film-is-playing .dj-film-center-play{
+  opacity:0;
+  pointer-events:none;
+}
+.dj-stage.film-is-playing:hover .dj-film-center-play,
+.dj-stage.film-is-playing .dj-film-center-play:focus-visible{
+  opacity:.85;
+  pointer-events:auto;
+}
+.dj-stage-copy{z-index:4!important;}
+.dj-scene-buttonrow{position:relative;z-index:7;}
+.dj-scene-buttonrow a{
+  font-size:12px;
+  color:#ffdcab;
+  padding:8px 13px;
+  border-radius:25px;
+  background:#1a294abb;
+  text-decoration:underline;
+}
+.dj-scene-buttonrow a[hidden]{display:none!important;}
+.dj-stage .dj-status-label{color:#e9dccf;}
+@media(prefers-reduced-motion:reduce){
+  /* Reduced motion keeps the film accessible; playback is stopped by JS initially,
+     never hidden by CSS. User can opt in using the visible play control. */
+  .dj-scene-video{display:block!important;}
+  .dj-film-center-play{transition:none;}
+  .dj-card{transition:none;}
+}
+@media(max-width:650px){
+  .dj-film-topline{top:12px;left:12px;right:12px;font-size:10px;}
+  .dj-film-live{padding:7px 9px;}
+  .dj-film-center-play{top:30%;width:58px;height:58px;font-size:25px;}
+  .dj-stage-copy{padding:23px!important;}
+  .dj-scene-buttonrow{gap:9px;}
+}
