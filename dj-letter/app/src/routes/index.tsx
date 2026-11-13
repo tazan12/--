@@ -12,21 +12,34 @@ function RadioPage(){
  const [notice,setNotice]=useState("");
  const [playing,setPlaying]=useState(false);
  const djRef=useRef<HTMLAudioElement>(null);
+ const maleRef=useRef<HTMLAudioElement>(null);
+ const [narrator,setNarrator]=useState<"yoona"|"male">("yoona");
  const musicRef=useRef<HTMLAudioElement>(null);
  const current=stories[active];
+ const [motionOff,setMotionOff]=useState(false);
+ const [wide,setWide]=useState(false);
+ const videoRef=useRef<HTMLVideoElement>(null);
+ const filmName="ep"+String(active+1).padStart(2,"0");
+ useEffect(()=>{const video=videoRef.current;if(!video)return;if(motionOff)video.pause();else video.play().catch(()=>{})},[active,motionOff]);
+
  const change=(i:number)=>{
-  djRef.current?.pause();musicRef.current?.pause();setActive(i);setPhase("idle");setPlaying(false);setNotice("");
+  djRef.current?.pause();maleRef.current?.pause();musicRef.current?.pause();setNarrator("yoona");setActive(i);setPhase("idle");setPlaying(false);setNotice("");
  };
  const onDjEnded=()=>{
   setPhase("music");setPlaying(true);
   window.setTimeout(()=>{musicRef.current?.play().catch(()=>{setPlaying(false);setNotice("음원을 불러오지 못했습니다. 원본 링크에서 들을 수 있습니다.")})},1800);
  };
  const begin=()=>{
-  djRef.current?.pause();musicRef.current?.pause();setPhase("dj");setPlaying(true);setNotice("");
+  djRef.current?.pause();maleRef.current?.pause();musicRef.current?.pause();setNarrator("yoona");setPhase("dj");setPlaying(true);setNotice("");
   window.setTimeout(()=>djRef.current?.play().catch(()=>{setPlaying(false);setNotice("낭독을 시작하지 못했습니다. 다시 눌러 주세요.")}),100);
  };
+ const previewMale=()=>{
+  djRef.current?.pause();maleRef.current?.pause();musicRef.current?.pause();
+  setNarrator("male");setPhase("dj");setPlaying(true);setNotice("");
+  if(maleRef.current){maleRef.current.currentTime=0;maleRef.current.play().catch(()=>{setPlaying(false);setNotice("시범 음성을 재생하지 못했습니다.")})}
+ };
  const toggle=()=>{
-  const audio=phase==="dj"?djRef.current:musicRef.current;
+  const audio=phase==="dj"?(narrator==="male"?maleRef.current:djRef.current):musicRef.current;
   if(!audio){begin();return}
   if(audio.paused){audio.play().then(()=>setPlaying(true)).catch(()=>setNotice("재생이 차단되었습니다. 다시 눌러 주세요."))}
   else{audio.pause();setPlaying(false)}
@@ -35,16 +48,29 @@ function RadioPage(){
  useEffect(()=>{if(phase==="music"&&musicRef.current){musicRef.current.volume=.7}},[phase]);
  const selected=filter==="전체"?stories:stories.filter(x=>x.mood===filter);
  const moods=["전체","사랑","그리움","위로","휴식","회복","고요","상실","기억","동행"];
- return <main className="dj-app">
+ return <main className={wide?"dj-app dj-wide":"dj-app"}>
  <header className="dj-header"><div className="dj-mark"><Moon size={24}/> DJ의 편지 <small>CLASSICAL · LETTERS · REST</small></div><nav><a href="#listen">오늘의 편지</a><a href="#episodes">이야기 서재</a><a href="#write">나에게 쓰는 편지</a></nav></header>
  <section className="dj-hero" id="listen"><div className="dj-stars" aria-hidden="true"></div><div className="dj-orbit" aria-hidden="true">☾</div>
  <div className="dj-intro"><div className="dj-kicker">LATE NIGHT RADIO · WITH YOONA</div><h1>오늘은 음악에게<br/><em>마음을 맡겨요.</em></h1><p>이야기가 먼저 다가오고, 그 뒤에 클래식이 흐릅니다.<br/>지친 하루의 끝에서 당신에게 보내는 작은 편지.</p><div className="dj-cta"><button type="button" onClick={begin}><Headphones size={19}/> DJ의 편지 듣기</button><a href="#episodes">이야기 둘러보기</a></div><p className="dj-hint">윤아의 한국어 낭독 12편 · 실제 클래식 연주 · 자유로운 감상</p></div>
- <div className="dj-stage"><div className="dj-vignette"><div className="dj-moon">☾</div><div className="dj-hills"></div><div className="dj-sparkles">✧ ✦ ✧</div></div><div className="dj-stage-copy"><span>LETTER {String(active+1).padStart(2,"0")} / 12</span><h2>{current.title}</h2><p>{current.composer} · {current.music}</p><div className="dj-status">{phase==="dj"?"윤아 DJ가 이야기를 들려드리고 있어요":phase==="music"?"이제 음악이 당신에게 말을 건넵니다":"이야기를 펼칠 준비가 되었습니다"}</div><button onClick={phase==="idle"?begin:toggle} className="dj-round" aria-label={playing?"일시정지":"재생"}>{playing?<Pause/>:<Play/>}</button><button onClick={()=>change((active+1)%stories.length)} className="dj-skip" aria-label="다음 이야기"><SkipForward/></button></div></div></section>
+ <div className="dj-stage">
+  <video ref={videoRef} key={filmName} className="dj-scene-video" aria-hidden="true" autoPlay={!motionOff} muted playsInline loop preload="metadata" poster={"/assets/films/"+filmName+".webp"}>
+   <source src={"/assets/films/"+filmName+".mp4"} type="video/mp4" />
+  </video>
+  <div className="dj-film-shade" aria-hidden="true"></div>
+  <div className="dj-stage-copy"><span>LETTER {String(active+1).padStart(2,"0")} / 12</span><h2>{current.title}</h2><p>{current.composer} · {current.music}</p><div className="dj-status">{phase==="dj"?(narrator==="male"?"따뜻한 남성 DJ 시범 음성을 듣고 있어요":"윤아 DJ가 이야기를 들려드리고 있어요"):phase==="music"?"이제 음악이 당신에게 말을 건넵니다":"이야기를 펼칠 준비가 되었습니다"}</div><button onClick={phase==="idle"?begin:toggle} className="dj-round" aria-label={playing?"일시정지":"재생"}>{playing?<Pause/>:<Play/>}</button><button onClick={()=>change((active+1)%stories.length)} className="dj-skip" aria-label="다음 이야기"><SkipForward/></button>
+ <div className="dj-video-controls">
+ <button type="button" onClick={()=>setWide(!wide)}>{wide?"▢ 기본 화면":"▣ 영상 크게 보기"}</button>
+ <button type="button" onClick={()=>setMotionOff(!motionOff)}>{motionOff?"영상 켜기":"움직임 끄기"}</button>
+ {active===0&&<button type="button" onClick={previewMale}>새 남성 DJ 음성 들어보기</button>}
+ <span>실제 자연 풍경 영상 · Mixkit</span>
+ </div>
+ </div></div></section>
  <section className="dj-reader"><div className="dj-sectiontop"><span>✉ 오늘의 한 장</span><span>“음악은 끝내 다 하지 못한 마음의 문장입니다.”</span></div><div className="dj-letter"><div className="dj-letter-head"><BookOpen size={20}/><span>{current.mood}에 관한 이야기</span></div><h2>{current.title}</h2><p>{current.story}</p><p className="dj-closing">이제 마음을 내려놓고, 잠시 음악을 들어보세요.</p><div className="dj-letter-bottom"><button onClick={begin}><Play size={16}/> 처음부터 들어보기</button><button onClick={()=>{djRef.current?.pause();setPhase("music");setPlaying(true);setTimeout(()=>musicRef.current?.play().catch(()=>setNotice("음악 재생을 확인해 주세요.")),80)}}>바로 음악 듣기</button></div></div></section>
  <section className="dj-library" id="episodes"><div className="dj-sectionhead"><div><span className="dj-kicker">YOUR MUSIC LIBRARY</span><h2>열두 통의 음악 편지</h2><p>오늘의 마음과 닮은 이야기를 골라 보세요.</p></div><div className="dj-tags">{moods.map(m=><button key={m} className={m===filter?"selected":""} onClick={()=>setFilter(m)}>{m}</button>)}</div></div><div className="dj-grid">{selected.map((e)=>{const i=stories.findIndex(x=>x.key===e.key);return <button key={e.key} className={"dj-card "+(i===active?"active":"")} onClick={()=>{change(i);window.scrollTo({top:0,behavior:"smooth"})}}><div className="dj-card-sky"><span>EP. {String(i+1).padStart(2,"0")}</span><span className="dj-card-symbol">{["☾","♬","☂","✉","✧","♡","❦","♭","☼","❀","❄","♫"][i]}</span></div><div className="dj-card-copy"><small>{e.composer} · {e.mood}</small><strong>{e.title}</strong><span>{e.music}</span></div></button>})}</div></section>
  <section id="write" className="dj-journal"><div><span className="dj-kicker">YOUR OWN LETTER</span><h2>오늘의 나에게,<br/>한 줄의 다정함을.</h2><p>당신의 문장은 이 기기의 브라우저에만 보관됩니다.</p></div><div><textarea value={note} onChange={ev=>setNote(ev.target.value)} placeholder="오늘 나에게 꼭 들려주고 싶은 말은…" rows={5}/><button onClick={()=>{localStorage.setItem("dj-letter-note",note);setNotice("이 브라우저에 편지를 보관했습니다.")}}>나에게 편지 보관하기 ♡</button></div></section>
- <footer>DJ의 편지 · 문학적 재구성과 역사적 사실을 구분해 감상해 주세요. 음악은 심리 치료의 대체물이 아닙니다. <a href="https://commons.wikimedia.org/wiki/Category:Audio_files_of_classical_music" target="_blank" rel="noopener noreferrer">클래식 녹음 출처</a></footer>
+ <footer>DJ의 편지 · 문학적 재구성과 역사적 사실을 구분해 감상해 주세요. 음악은 심리 치료의 대체물이 아닙니다. 모든 콘텐츠는 무료 감상을 위해 제공됩니다. <a href="/VIDEO_SOURCES.md" target="_blank" rel="noopener noreferrer">영상 출처</a> · <a href="https://commons.wikimedia.org/wiki/Category:Audio_files_of_classical_music" target="_blank" rel="noopener noreferrer">클래식 녹음 출처</a></footer>
  <audio ref={djRef} src={current.dj} onEnded={onDjEnded} onPlay={()=>setPlaying(true)} onPause={()=>{if(phase==="dj")setPlaying(false)}} onError={()=>setNotice("DJ 낭독을 불러올 수 없습니다. 인터넷 연결을 확인해 주세요.")}/>
+ <audio ref={maleRef} src="https://d8j0ntlcm91z4.cloudfront.net/user_3CAlnWMnpq9B5mFhGM1WtH8ufxY/hf_20261113_141659_a69006bc-483c-4b29-aad7-15068ab8519c.mp3" preload="none" onPlay={()=>setPlaying(true)} onPause={()=>{if(narrator==="male"&&phase==="dj")setPlaying(false)}} onEnded={onDjEnded} onError={()=>setNotice("시범 음성 연결 실패")}/>
  <audio ref={musicRef} src={current.src} onPlay={()=>setPlaying(true)} onPause={()=>{if(phase==="music")setPlaying(false)}} onEnded={()=>{setPlaying(false);setNotice("음악이 끝났습니다. 오늘의 마음을 천천히 돌아보세요.")}} onError={()=>setNotice("음악 연결에 문제가 있습니다. 출처에서 재생해 주세요.")}/>
  {notice&&<div className="dj-toast" role="status">{notice}<button onClick={()=>setNotice("")}>×</button></div>}
  </main>
