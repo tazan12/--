@@ -1,0 +1,81 @@
+name: DJ Letter - Mind journal release
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/mind-journal/**'
+      - 'scripts/build-mind-journal.py'
+      - 'tests/mind-store.test.cjs'
+      - '.github/workflows/release-mind-journal.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout the authorized DJ Letter repository
+        uses: actions/checkout@v4
+      - name: Build the coherent daily journal release
+        run: |
+          python3 scripts/mind-journal/polish.py
+          python3 scripts/mind-journal/refine.py
+          python3 scripts/mind-journal/sustainability.py
+          python3 scripts/build-mind-journal.py
+          python3 scripts/mind-journal/maintenance.py
+      - name: Validate storage safety and unchanged media
+        run: |
+          node --check docs/player.js
+          node --check docs/scenery.js
+          node --check docs/mind-store.js
+          node --check docs/mind-journal.js
+          node --check docs/sw.js
+          node --test tests/mind-store.test.cjs
+          git diff --exit-code -- docs/assets/films docs/assets/voice docs/episodes.js
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          d=Path('docs');h=(d/'index.html').read_text()
+          assert h.count('<video ')==1
+          assert 'filmToggle' not in h
+          assert 'id="journalBody"' in h and 'id="programAudio"' in h
+          assert 'mind-20261114-1' in h
+          assert len(re.findall(r'\bid="([^"]+)"',h))==len(set(re.findall(r'\bid="([^"]+)"',h)))
+          assert json.loads((d/'manifest.webmanifest').read_text())['scope']=='./'
+          assert (d/'assets/app-icon-192.png').is_file()
+          assert (d/'assets/app-icon-512.png').is_file()
+          for n in range(1,13):
+              assert (d/f'assets/films/ep{n:02}.compat.mp4').is_file()
+              assert (d/f'assets/films/ep{n:02}.motion.webp').is_file()
+              assert (d/f'assets/voice/ep{n:02}.mp3').is_file()
+          for p in d.glob('*.js'):
+              assert 'higgsfield.app' not in p.read_text(), p
+          print('PASS: dated journal, privacy controls, PWA shell, 12 unchanged scenery and male voice files')
+          PY
+      - name: Save the tested release and maintenance guidance
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs scripts/mind-journal README.md MAINTENANCE.md .github/workflows maintenance
+          if ! git diff --cached --quiet; then
+            git commit -m "Release dated private mind journal, mobile themes and sustainable offline shell"
+            git push origin HEAD:main
+          fi
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload the complete verified website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./docs
+      - name: Deploy the new public release
+        id: deployment
+        uses: actions/deploy-pages@v4
