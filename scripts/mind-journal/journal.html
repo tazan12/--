@@ -5,7 +5,8 @@
     <button type="button" data-theme-choice="forest" aria-pressed="false"><img src="./assets/films/ep10.webp" alt="" loading="lazy"/><span><strong>숲의 안부</strong><small>조금 느린 걸음으로</small></span></button>
     <button type="button" data-theme-choice="rose" aria-pressed="false"><img src="./assets/films/ep06.webp" alt="" loading="lazy"/><span><strong>다정한 오후</strong><small>마음에 온기를 남기는 시간</small></span></button>
   </div>
-  <div class="journal-layout">
+  <button id="calendarJump" class="mobile-calendar-jump" type="button">달력에서 날짜 고르기 <span aria-hidden="true">↓</span></button>
+<div class="journal-layout">
     <aside class="journal-side" aria-label="기록 달력과 보관함">
       <div class="calendar-box">
         <div class="calendar-heading"><button id="calPrev" class="icon-button" type="button" aria-label="이전 달">‹</button><h2 id="calendarMonth"></h2><button id="calNext" class="icon-button" type="button" aria-label="다음 달">›</button></div>
@@ -22,7 +23,7 @@
         <fieldset class="mood-field"><legend>오늘 마음의 날씨는 어떤가요?</legend><div id="moodPick" class="mood-pick" role="group" aria-label="그날의 감정"></div><p id="moodWhisper" class="mood-whisper">어떤 마음이든, 그대로 적어 두어도 괜찮아요.</p></fieldset>
         <div class="writing-prompt"><span>오늘의 작은 질문</span><p id="promptText"></p><button type="button" id="nextPrompt" aria-label="다른 글쓰기 질문 보기">다른 질문 ↻</button></div>
         <label class="sr-only" for="journalTitleInput">이 날의 제목</label><input id="journalTitleInput" class="journal-title-input" maxlength="80" placeholder="이 하루에 이름을 붙인다면…" autocomplete="off"/>
-        <label class="sr-only" for="journalBody">마음일기 본문</label><textarea id="journalBody" class="journal-body" rows="9" maxlength="12000" placeholder="오늘 마음에 남은 장면을 천천히 적어 보세요.\n단 한 줄이어도, 다 쓰지 못해도 괜찮아요."></textarea>
+        <label class="sr-only" for="journalBody">마음일기 본문</label><textarea id="journalBody" class="journal-body" rows="9" maxlength="12000" placeholder="오늘 마음에 남은 장면을 천천히 적어 보세요. 단 한 줄이어도 괜찮아요."></textarea>
         <div class="writing-meta"><span id="journalStatus" role="status" aria-live="polite">이 브라우저에 자동 저장됩니다</span><span id="charCount">0 / 12,000</span></div>
         <label class="kindness-label" for="journalKindness">내일의 나에게 건네는 다정한 한마디</label><textarea id="journalKindness" class="kindness-input" rows="2" maxlength="300" placeholder="오늘의 너도 충분히 애썼어."></textarea>
         <div class="journal-track"><div><span>이 날의 선율</span><p id="attachedTrack">마음과 함께 기억할 음악을 담아 보세요.</p></div><div class="track-actions"><button id="attachTrack" type="button">지금 듣는 곡 담기</button><button id="playAttached" type="button" hidden>다시 듣기</button><button id="clearTrack" class="text-button" type="button" hidden>연결 해제</button></div></div>

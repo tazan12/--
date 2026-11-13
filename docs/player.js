@@ -20,7 +20,6 @@
   try {
     const savedVolume = Number(localStorage.getItem('dj-letter-volume'));
     if (localStorage.getItem('dj-letter-volume') !== null && Number.isFinite(savedVolume)) volume = Math.max(0, Math.min(1, savedVolume));
-    $('note').value = localStorage.getItem('dj-letter-personal-note') || localStorage.getItem('dj-letter-note') || '';
   } catch (_) { /* Storage restrictions do not stop playback. */ }
   $('volume').value = Math.round(volume * 100);
   audio.preload = 'none'; audio.volume = volume;
@@ -189,9 +188,16 @@
     $('wide').textContent = wide ? '기본 화면' : '넓게 감상'; $('wide').setAttribute('aria-pressed', String(wide));
     retryFilm();
   };
-  $('noteSave').onclick = () => {
-    try { localStorage.setItem('dj-letter-personal-note', $('note').value); toast('이 브라우저에 편지를 보관했습니다.'); }
-    catch (_) { toast('브라우저 저장이 제한되어 있습니다. 편지를 따로 보관해 주세요.'); }
-  };
+  // Stable bridge for journal recommendations, timer and mini-player.
+  window.DJ_PLAYER = Object.freeze({
+    select(n, autoplay=false) {
+      if (!Number.isInteger(n) || n<0 || n>=stories.length) return;
+      setEpisode(n); if (autoplay) startNarration();
+    },
+    pause() {
+      invalidateAudio(); audioStatus('음악을 잠시 쉬어 둡니다.'); updateControls();
+    },
+    state() { return {episode:index,phase,playing:!audio.paused,wanted}; }
+  });
   setEpisode(0); renderMoods();
 })();

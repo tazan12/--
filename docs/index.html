@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-mind-theme="moon">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>DJ의 편지 | 서사가 있는 클래식 라디오</title>
@@ -8,26 +8,35 @@
 <meta property="og:description" content="이야기와 음악 사이, 마음을 쉬어 가는 시간"/>
 <meta property="og:image" content="https://tazan12.github.io/--/assets/dj-cover.webp"/>
 <meta name="theme-color" content="#12192b"/>
-<meta name="dj-release" content="20261114-stable3"/>
+<meta name="dj-release" content="mind-20261114-1"/>
 <link rel="canonical" href="https://tazan12.github.io/--/"/>
-<link rel="stylesheet" href="./player.css?v=20261114-stable3"/>
-<script src="./episodes.js?v=20261114-stable3" defer></script>
-<script src="./scenery.js?v=20261114-stable3" defer></script>
-<script src="./player.js?v=20261114-stable3" defer></script>
+<link rel="stylesheet" href="./player.css?v=mind-20261114-1"/>
+<script src="./episodes.js?v=mind-20261114-1" defer></script>
+<script src="./scenery.js?v=mind-20261114-1" defer></script>
+<script src="./player.js?v=mind-20261114-1" defer></script>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="DJ의 편지"/>
+<link rel="manifest" href="./manifest.webmanifest"/>
+<link rel="apple-touch-icon" href="./assets/app-icon-192.png"/>
+<link rel="stylesheet" href="./mind-journal.css?v=mind-20261114-1"/>
+<script src="./mind-store.js?v=mind-20261114-1" defer></script>
+<script src="./mind-journal.js?v=mind-20261114-1" defer></script>
 </head>
-<body>
+<body data-app-view="listen">
+<!-- MIND_JOURNAL_RELEASE -->
 <a class="skip-link" href="#stage">음악 감상으로 바로 가기</a>
 <main class="dj-app">
 <header class="dj-header">
 <a class="dj-mark" href="./">☾ DJ의 편지 <small>CLASSICAL · LETTERS · REST</small></a>
-<nav aria-label="주 메뉴"><a href="#listen">오늘의 편지</a><a href="#episodes">이야기 서재</a><a href="#write">나에게 쓰는 편지</a></nav>
+<nav aria-label="주 메뉴"><a href="#listen" data-nav-view="listen">음악 감상</a><a href="#write" data-nav-view="journal">마음일기</a><a href="#episodes" data-nav-view="library">음악서재</a></nav><span class="header-datestamp" id="greetingDate"></span>
 </header>
-<section class="dj-hero" id="listen" aria-label="오늘의 클래식 감상">
+<section class="dj-hero app-view" data-app-view="listen" id="listen" aria-label="오늘의 클래식 감상">
 <div class="dj-intro"><div class="dj-kicker">A LITTLE ROOM FOR YOUR HEART</div>
 <h1>오늘은 음악에게<br/><em>마음을 맡겨요.</em></h1>
 <p>이야기가 다가오고, 음악이 곁에 머무는 시간.<br/>풍경은 조용히 흐르도록 두세요.</p>
-<div class="dj-cta"><button id="mainPlay" type="button">편지 듣기</button><a href="#episodes">이야기 둘러보기</a></div>
+<div class="dj-cta"><button id="mainPlay" type="button">편지 듣기</button><a href="#write" data-nav-view="journal">마음 한 줄 남기기</a></div>
 <p class="dj-hint">한국어 남성 DJ · 열두 통의 음악 편지 · 무료 감상</p>
+<div class="daily-whisper"><strong>오늘, 당신에게</strong><span id="dailyWhisper">마음에도 숨을 고르는 한 페이지가 필요하니까요.</span></div>
 </div>
 <div class="dj-stage" id="stage">
 <div class="dj-film-window" id="filmWindow">
@@ -44,9 +53,12 @@
 <div class="dj-progress"><span id="clock">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" disabled aria-label="낭독·음악 재생 위치"/><span id="duration">0:00</span></div>
 <div class="dj-scene-buttonrow">
 <button id="wide" type="button" aria-pressed="false">넓게 감상</button>
+<button id="likeTrack" class="favorite-button" type="button" aria-pressed="false">♡ 간직하기</button>
+<button id="writeWithTrack" type="button">이 곡과 일기 쓰기</button>
 <details class="dj-options"><summary>감상 설정</summary><div class="dj-options-panel">
 <label><input id="still" type="checkbox"/>풍경을 정지 화면으로 보기</label>
 <label for="volume">소리 크기 <input id="volume" type="range" min="0" max="100" value="75"/></label>
+<label class="sleep-control" for="sleepTimer">음악 자동 멈춤 <select id="sleepTimer"><option value="0">끄기</option><option value="10">10분</option><option value="20">20분</option><option value="30">30분</option><option value="60">60분</option></select></label><small id="sleepStatus">원하는 만큼만 듣고 편안히 쉬세요.</small>
 <small>풍경은 자동으로 재생됩니다. 정지 화면은 위 설정을 직접 선택했을 때만 적용됩니다. 영상이 제한되면 같은 실사 장면의 호환 형식으로 이어집니다.</small>
 </div></details><span class="dj-status-label">무음 실사 풍경 · 자동으로 이어집니다</span>
 </div>
@@ -55,16 +67,69 @@
 </div>
 </div>
 </section>
-<section class="dj-reader" aria-labelledby="readerTitle"><div class="dj-sectiontop"><span>오늘의 한 장</span><span>음악은 끝내 다 하지 못한 마음의 문장입니다.</span></div>
+<section class="dj-reader app-view" data-app-view="listen" aria-labelledby="readerTitle"><div class="dj-sectiontop"><span>오늘의 한 장</span><span>음악은 끝내 다 하지 못한 마음의 문장입니다.</span></div>
 <div class="dj-letter"><div class="dj-letter-head" id="readerMood">그리움에 관한 이야기</div><h2 id="readerTitle">이름 없는 편지를 위한 밤</h2><p id="readerText"></p><p class="dj-closing">오늘의 마음을 잠시 내려놓고, 이제 음악을 들어보세요.</p>
 <div class="dj-letter-bottom"><button id="readerPlay" type="button">편지 처음부터 듣기</button><button id="musicOnly" type="button">바로 클래식 듣기</button></div></div>
 </section>
-<section class="dj-library" id="episodes" aria-labelledby="libraryTitle"><div class="dj-sectionhead"><div><span class="dj-kicker">YOUR MUSIC LIBRARY</span><h2 id="libraryTitle">열두 통의 음악 편지</h2><p>지금 마음과 닮은 이야기를 골라 보세요.</p></div><div class="dj-tags" id="moods" role="group" aria-label="감정별 이야기 선택"></div></div><div class="dj-grid" id="cards"></div></section>
-<section class="dj-journal" id="write" aria-labelledby="journalTitle"><div><span class="dj-kicker">YOUR OWN LETTER</span><h2 id="journalTitle">오늘의 나에게,<br/>한 줄의 다정함을.</h2><p>당신의 문장은 이 기기의 브라우저에만 보관됩니다.</p></div><div><textarea id="note" rows="5" aria-label="오늘 나에게 쓰는 편지" placeholder="오늘 나에게 꼭 들려주고 싶은 말은…"></textarea><button id="noteSave" type="button">나에게 편지 보관하기</button></div></section>
+<section class="dj-library app-view" data-app-view="library" hidden id="episodes" aria-labelledby="libraryTitle"><div class="dj-sectionhead"><div><span class="dj-kicker">YOUR MUSIC LIBRARY</span><h2 id="libraryTitle">열두 통의 음악 편지</h2><p>지금 마음과 닮은 이야기를 골라 보세요.</p></div><div class="dj-tags" id="moods" role="group" aria-label="감정별 이야기 선택"></div></div><div class="library-favorites"><h2>다시 꺼내 듣고 싶은 편지</h2><p>좋아하는 음악은 가까운 곳에 남겨 두세요.</p><div id="favoriteList" class="favorite-list"></div></div><div class="dj-grid" id="cards"></div></section>
+<section class="mind-journal app-view" id="write" data-app-view="journal" aria-labelledby="mindTitle" hidden>
+  <header class="mind-heading"><div><span class="mind-eyebrow">A PAGE FOR YOUR HEART</span><h1 id="mindTitle">오늘의 마음을<br class="mobile-only"/> 한 장 남겨요.</h1><p>잘 쓴 문장보다, 솔직한 한 줄이면 충분해요.<br/>비어 있는 날도 당신의 시간입니다.</p></div><button class="quiet-button" id="openBackup" type="button">기록 보관 · 백업</button></header>
+  <div class="theme-choices" id="themeChoices" role="group" aria-label="일기 테마 선택">
+    <button type="button" data-theme-choice="moon" aria-pressed="true"><img src="./assets/films/ep05.webp" alt="" loading="lazy"/><span><strong>달빛 서재</strong><small>조용히 나를 들여다보는 밤</small></span></button>
+    <button type="button" data-theme-choice="forest" aria-pressed="false"><img src="./assets/films/ep10.webp" alt="" loading="lazy"/><span><strong>숲의 안부</strong><small>조금 느린 걸음으로</small></span></button>
+    <button type="button" data-theme-choice="rose" aria-pressed="false"><img src="./assets/films/ep06.webp" alt="" loading="lazy"/><span><strong>다정한 오후</strong><small>마음에 온기를 남기는 시간</small></span></button>
+  </div>
+  <button id="calendarJump" class="mobile-calendar-jump" type="button">달력에서 날짜 고르기 <span aria-hidden="true">↓</span></button>
+<div class="journal-layout">
+    <aside class="journal-side" aria-label="기록 달력과 보관함">
+      <div class="calendar-box">
+        <div class="calendar-heading"><button id="calPrev" class="icon-button" type="button" aria-label="이전 달">‹</button><h2 id="calendarMonth"></h2><button id="calNext" class="icon-button" type="button" aria-label="다음 달">›</button></div>
+        <div class="calendar-week" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+        <div id="calendarDays" class="calendar-days" role="group" aria-label="일기 날짜 선택"></div>
+        <div class="calendar-foot"><small><i class="entry-dot"></i> 마음을 남긴 날</small><button type="button" id="calToday" class="text-button">오늘로</button></div>
+        <p id="monthSummary" class="month-summary">작은 기록부터 시작해요.</p>
+      </div>
+      <div class="memory-box"><div class="section-label"><h2>쌓여 가는 마음</h2><span id="entryCount">0장</span></div><label class="sr-only" for="searchEntries">일기 검색</label><input id="searchEntries" type="search" placeholder="그날의 문장 찾기" maxlength="100"/><label class="sr-only" for="filterMood">감정으로 기록 찾기</label><select id="filterMood"><option value="all">모든 마음</option><option value="calm">평온</option><option value="bright">기쁨</option><option value="longing">그리움</option><option value="tired">지침</option><option value="uneasy">불안</option><option value="mixed">복잡함</option></select><div id="entryList" class="entry-list"></div><button id="moreEntries" class="text-button" type="button" hidden>더 오래된 기록 보기</button></div>
+    </aside>
+    <div class="journal-main">
+      <article class="journal-paper" aria-label="선택한 날짜의 마음일기">
+        <div class="paper-date"><div><span class="paper-eyebrow">DEAR, MYSELF</span><h2 id="selectedDateLabel"></h2></div><label class="date-picker">날짜 선택<input id="entryDate" type="date" min="1900-01-01" max="2199-12-31"/></label></div>
+        <fieldset class="mood-field"><legend>오늘 마음의 날씨는 어떤가요?</legend><div id="moodPick" class="mood-pick" role="group" aria-label="그날의 감정"></div><p id="moodWhisper" class="mood-whisper">어떤 마음이든, 그대로 적어 두어도 괜찮아요.</p></fieldset>
+        <div class="writing-prompt"><span>오늘의 작은 질문</span><p id="promptText"></p><button type="button" id="nextPrompt" aria-label="다른 글쓰기 질문 보기">다른 질문 ↻</button></div>
+        <label class="sr-only" for="journalTitleInput">이 날의 제목</label><input id="journalTitleInput" class="journal-title-input" maxlength="80" placeholder="이 하루에 이름을 붙인다면…" autocomplete="off"/>
+        <label class="sr-only" for="journalBody">마음일기 본문</label><textarea id="journalBody" class="journal-body" rows="9" maxlength="12000" placeholder="오늘 마음에 남은 장면을 천천히 적어 보세요. 단 한 줄이어도 괜찮아요."></textarea>
+        <div class="writing-meta"><span id="journalStatus" role="status" aria-live="polite">이 브라우저에 자동 저장됩니다</span><span id="charCount">0 / 12,000</span></div>
+        <label class="kindness-label" for="journalKindness">내일의 나에게 건네는 다정한 한마디</label><textarea id="journalKindness" class="kindness-input" rows="2" maxlength="300" placeholder="오늘의 너도 충분히 애썼어."></textarea>
+        <div class="journal-track"><div><span>이 날의 선율</span><p id="attachedTrack">마음과 함께 기억할 음악을 담아 보세요.</p></div><div class="track-actions"><button id="attachTrack" type="button">지금 듣는 곡 담기</button><button id="playAttached" type="button" hidden>다시 듣기</button><button id="clearTrack" class="text-button" type="button" hidden>연결 해제</button></div></div>
+        <div id="entryConflict" class="inline-warning" role="alert" hidden><p id="entryConflictText"></p><button id="reloadEntry" type="button">최신 기록 불러오기</button><button id="draftBackup" type="button">현재 초안 백업</button></div>
+        <div class="paper-actions"><button id="entrySave" class="save-journal" type="button">마음 보관하기</button><button id="entryDelete" class="text-button danger-text" type="button" disabled>이 날짜 기록 삭제</button></div>
+        <p class="privacy-footnote">개인 기록은 이 기기·브라우저에만 저장됩니다. 자동 동기화되지 않으며, 브라우저 데이터 삭제에 대비해 백업을 보관해 주세요.</p>
+      </article>
+      <aside class="journal-recommend"><div><span class="mind-eyebrow">A LITTLE COMPANY</span><h3 id="recommendTitle">이 마음에 곁을 내어 주는 음악</h3><p id="recommendCopy">일기를 쓰는 동안, 부드러운 선율을 곁에 두세요.</p></div><button id="recommendPlay" type="button">함께 듣기</button></aside>
+    </div>
+  </div>
+</section>
+<dialog id="backupDialog" class="mind-dialog" aria-labelledby="backupTitle">
+ <div class="dialog-top"><h2 id="backupTitle">오래 간직하는 방법</h2><button type="button" data-close-dialog="backupDialog" class="icon-button" aria-label="보관 설정 닫기">×</button></div>
+ <p>당신의 일기는 서버나 GitHub에 전송되지 않습니다. 같은 기기에서도 브라우저가 다르면 별도로 보관됩니다.</p>
+ <div class="backup-actions"><button id="backupExport" class="primary-button" type="button">전체 일기 백업 내보내기</button><label class="file-button">백업 파일 가져오기<input id="restoreFile" type="file" accept="application/json,.json"/></label></div>
+ <small id="lastBackup">아직 백업을 내보내지 않았어요.</small>
+ <p class="backup-warning">백업은 암호화되지 않은 JSON 파일입니다. 일기 내용이 포함되므로 본인만 접근하는 곳에 보관하세요. 공용 기기에서는 일기 사용을 주의해 주세요.</p>
+ <details><summary>저장 공간과 오프라인</summary><p id="offlineStatus">일기와 기본 화면은 첫 방문 이후 오프라인에서 사용할 수 있도록 준비합니다. 클래식 음악과 풍경 영상은 인터넷 연결이 필요합니다.</p><button id="persistStorage" type="button">기록 저장공간 유지 요청</button><p id="persistenceStatus" role="status"></p><button id="rawExport" class="text-button" type="button">읽기 오류 시 원본 기록 백업</button></details>
+ <div class="install-section"><h3>자주 찾아오는 작은 서재</h3><button id="installApp" type="button">홈 화면에 추가하는 방법</button><p id="installHint">휴대전화 브라우저 메뉴에서 ‘홈 화면에 추가’를 선택할 수 있습니다. 지원 여부는 브라우저에 따라 다릅니다.</p></div>
+ <details><summary>이 서재가 지속되는 방식</summary><p>회원가입·광고·추적 코드·생성형 AI 호출 없이 작동합니다. 음악과 풍경은 필요할 때만 불러오고, 일기는 사용자의 기기에 남깁니다. 기록 형식은 공개된 JSON이며 백업으로 다른 기기에 옮길 수 있습니다.</p><p>기록은 암호화 저장되지 않습니다. 이 앱은 치료나 상담을 대신하지 않으며 감정을 평가하거나 진단하지 않습니다.</p></details>
+</dialog>
+<dialog id="restoreDialog" class="mind-dialog" aria-labelledby="restoreTitle"><h2 id="restoreTitle">기록을 다시 펼칠까요?</h2><p id="restoreSummary"></p><label class="check-label"><input id="overwriteImport" type="checkbox"/>같은 날짜의 기존 기록을 백업 내용으로 교체</label><p>기본값은 기존 기록 유지입니다. 새 날짜의 기록만 추가합니다.</p><div class="dialog-actions"><button type="button" data-close-dialog="restoreDialog">취소</button><button id="confirmRestore" class="primary-button" type="button">기록 가져오기</button></div></dialog>
+<dialog id="deleteDialog" class="mind-dialog" aria-labelledby="deleteTitle"><h2 id="deleteTitle">이 날짜의 기록을 삭제할까요?</h2><p id="deleteSummary"></p><p>다른 날짜의 일기는 그대로 남습니다.</p><div class="dialog-actions"><button type="button" data-close-dialog="deleteDialog">남겨 두기</button><button id="confirmDelete" class="danger-button" type="button">이 날짜만 삭제</button></div></dialog>
+<div class="journal-alert" id="journalAlert" role="status" hidden><span id="journalAlertText"></span><button id="undoDelete" type="button" hidden>삭제 되돌리기</button><button id="dismissAlert" type="button" aria-label="알림 닫기">×</button></div>
+
 <footer>DJ의 편지 · 무료 공개 클래식 감상<br/>역사적 사실과 문학적 해석을 구분해 감상해 주세요. 심리 치료를 대체하지 않습니다.<br/>
 <a href="./video-sources.html" target="_blank" rel="noopener noreferrer">영상 출처와 이용허락</a> · <a href="https://commons.wikimedia.org/wiki/Category:Audio_files_of_classical_music" target="_blank" rel="noopener noreferrer">클래식 녹음 출처</a>
-</footer>
+<br/><button class="app-footer-link" id="footerBackup" type="button">기록 보관과 개인정보 안내</button><p class="connection-note" id="connectionStatus">기기에만 남는 마음 · 무료 음악 서재</p></footer>
 <div class="dj-toast" id="toast" role="status" hidden></div>
 <audio id="programAudio" preload="none" hidden></audio>
 <noscript><p>음악과 풍경을 감상하려면 브라우저에서 JavaScript를 허용해 주세요.</p></noscript>
+
+<nav class="app-bottom-nav" aria-label="모바일 메뉴"><a href="#listen" data-nav-view="listen"><span aria-hidden="true">♪</span>감상</a><a href="#write" data-nav-view="journal"><span aria-hidden="true">✎</span>마음일기</a><a href="#episodes" data-nav-view="library"><span aria-hidden="true">♡</span>음악서재</a></nav>
+<div class="mini-radio" id="miniRadio" aria-label="음악 조작" hidden><img id="miniImage" alt=""/><div class="mini-copy"><strong id="miniTitle"></strong><small id="miniPhase"></small></div><button id="miniToggle" type="button" aria-label="낭독·음악 듣기">▶</button><button id="miniNext" type="button" aria-label="다음 편지">⏭</button><a href="#listen" data-nav-view="listen">감상으로</a></div>
 </main></body></html>

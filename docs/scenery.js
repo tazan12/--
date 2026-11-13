@@ -11,7 +11,8 @@
   let lastProgress = performance.now(), lastTime = -1, frameCount = 0, callback = 0;
   let motionURL = '', posterURL = '', startedAt = 0;
   const path = ext => `./assets/films/ep${String(episode + 1).padStart(2, '0')}.${ext}?v=${RELEASE}`;
-  const desired = () => !still && !document.hidden;
+  let suspendedByView = false;
+  const desired = () => !still && !document.hidden && !suspendedByView;
   // An obsolete stored still flag must never silently disable a new release.
   try { localStorage.removeItem('dj-letter-still'); } catch (_) {}
   $('still').checked = still;
@@ -144,6 +145,11 @@
   // content plays automatically; only an explicit session choice pauses it.
   window.DJ_SCENERY = {
     setEpisode, resume, userStart,
+    setSuspended(value) {
+      suspendedByView = Boolean(value);
+      if (suspendedByView) pause();
+      else { lastProgress = performance.now(); resume(); }
+    },
     report: () => ({release: RELEASE, episode: episode + 1, mode, still,
       videoTime: video.currentTime, frameCount, ready: video.readyState,
       paused: video.paused, compatibilityVisible: !image.hidden,

@@ -1,0 +1,36 @@
+{
+  "id": "./",
+  "name": "DJ의 편지 · 마음서재",
+  "short_name": "마음서재",
+  "description": "클래식과 함께 남기는 날짜별 마음일기. 기록은 기기에만 보관됩니다.",
+  "lang": "ko",
+  "start_url": "./?source=installed#write",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#12192b",
+  "theme_color": "#12192b",
+  "icons": [
+    {
+      "src": "./assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "오늘의 마음일기",
+      "url": "./#write"
+    },
+    {
+      "name": "클래식 감상",
+      "url": "./#listen"
+    }
+  ]
+}

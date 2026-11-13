@@ -1,0 +1,16 @@
+{
+  "release": "mind-20261114-1",
+  "storageSchema": 1,
+  "journal": "local-only",
+  "mediaEngine": "20261114-stable3",
+  "features": [
+    "dated journal",
+    "calendar",
+    "moods",
+    "themes",
+    "backup-restore",
+    "favorites",
+    "sleep timer",
+    "offline-shell"
+  ]
+}
