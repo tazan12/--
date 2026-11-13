@@ -32,14 +32,14 @@ function playFilm(explicit=false){
  const promise=film.play();
  filmStatus('loading');
  if(promise&&typeof promise.then==='function'){
-  promise.then(()=>{if(token===videoToken)filmStatus('playing')})
+  promise.then(()=>{if(token===videoToken)filmStatus(film.paused?'paused':'playing')})
    .catch(err=>{if(token!==videoToken||err?.name==='AbortError')return;
     filmStatus(err?.name==='NotAllowedError'?'blocked':'error')});
  }
 }
 function toggleFilm(){
  const film=$('film');
- if(!film.paused&&!film.ended){motionOff=true;film.pause();filmStatus('paused')}
+ if(!film.paused&&!film.ended){motionOff=true;++videoToken;film.pause();filmStatus('paused')}
  else playFilm(true);
 }
 
