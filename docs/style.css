@@ -158,3 +158,20 @@ html{scroll-behavior:smooth}body{margin:0;background:#101626;color:#f6eada;font-
   .dj-stage-copy{padding:23px!important;}
   .dj-scene-buttonrow{gap:9px;}
 }
+
+
+/* Playback overlay remains interactive even if a play() promise settles late. */
+.dj-stage.film-is-playing .dj-film-center-play {
+  opacity:.42;
+  pointer-events:auto;
+  cursor:pointer;
+}
+.dj-stage.film-is-playing:hover .dj-film-center-play,
+.dj-stage.film-is-playing .dj-film-center-play:focus-visible {
+  opacity:1;
+  pointer-events:auto;
+}
+.dj-film-center-play { z-index:20!important; }
+@media (max-width:650px) {
+ .dj-film-center-play{top:25%;left:50%;}
+}
