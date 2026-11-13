@@ -7,137 +7,30 @@
     $('stageStatus').textContent = '이야기 정보를 불러오지 못했습니다. 페이지를 새로 열어 주세요.';
     return;
   }
-  const RELEASE = '20261114-natural1';
+  const RELEASE = '20261114-stable2';
   const pad = n => String(n).padStart(2, '0');
   const mediaPath = (kind, n, ext) => `./assets/${kind}/ep${pad(n + 1)}.${ext}?v=${RELEASE}`;
   const clock = n => Number.isFinite(n) && n >= 0 ? `${Math.floor(n / 60)}:${pad(Math.floor(n % 60))}` : '0:00';
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const audio = $('programAudio');
-  const films = [$('film'), $('filmNext')];
   const scenes = ['달빛이 머무는 밤', '꽃잎이 흔들리는 오후', '창가에 내리는 비', '흰 꽃의 작은 인사', '별빛이 흐르는 호수', '분홍빛 꽃바람', '해변에 닿는 파도', '산과 아침 구름', '저녁빛을 담은 바다', '햇살 가득한 초원', '눈 내리는 겨울 숲', '느리게 지나가는 구름'];
   let index = 0, filter = '전체', phase = 'idle', wanted = false, ticket = 0;
   let transition = 0, fade = 0, loadTimer = 0, toastTimer = 0, fallbackUsed = false;
-  let volume = 0.75, videoEpoch = 0, front = 0, swapTimer = 0, swapping = false;
-  let inView = true, videoFailed = false, still = reduce.matches, motionOverride = false;
-  const attempts = new WeakMap();
-  const labels = {playing: '풍경이 흐르고 있어요', loading: '풍경을 준비하고 있어요', blocked: '화면을 터치하면 풍경이 이어집니다', still: '고요한 풍경 · 정지 화면', paused: '풍경을 잠시 쉬어 둡니다', error: '연결을 확인하는 동안 풍경 사진을 보여드립니다'};
+  let volume = 0.75;
   try {
-    const saved = localStorage.getItem('dj-letter-still');
-    if (saved !== null) { still = saved === '1'; motionOverride = true; }
     const savedVolume = Number(localStorage.getItem('dj-letter-volume'));
     if (localStorage.getItem('dj-letter-volume') !== null && Number.isFinite(savedVolume)) volume = Math.max(0, Math.min(1, savedVolume));
     $('note').value = localStorage.getItem('dj-letter-personal-note') || localStorage.getItem('dj-letter-note') || '';
   } catch (_) { /* Storage restrictions do not stop playback. */ }
-  $('still').checked = still;
   $('volume').value = Math.round(volume * 100);
   audio.preload = 'none'; audio.volume = volume;
-  films.forEach(v => {
-    v.muted = true; v.defaultMuted = true; v.volume = 0; v.playsInline = true;
-    v.controls = false; v.loop = true; v.setAttribute('muted', '');
-    v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
-  });
   function toast(text) {
     clearTimeout(toastTimer); $('toast').textContent = text; $('toast').hidden = !text;
     if (text) toastTimer = setTimeout(() => { $('toast').hidden = true; }, 7000);
   }
-  function filmStatus(state) {
-    if ($('filmState').textContent !== labels[state]) $('filmState').textContent = labels[state];
-    $('stage').dataset.filmState = state;
-    $('filmFallback').hidden = state !== 'error';
-  }
-  const canAnimate = () => !still && !document.hidden && inView && !videoFailed;
-  function endSwap() {
-    clearTimeout(swapTimer); swapTimer = 0; swapping = false;
-    films.forEach((v, i) => { v.classList.toggle('is-front', i === front); if (i !== front) v.pause(); });
-  }
-  function pauseFilms() {
-    videoEpoch++; endSwap(); films.forEach(v => v.pause());
-    filmStatus(still ? 'still' : 'paused');
-  }
-  function playFilm(v = films[front]) {
-    if (!canAnimate() || !v.paused || attempts.has(v)) return;
-    const epoch = videoEpoch;
-    const marker = {};
-    attempts.set(v, marker);
-    v.muted = true; v.defaultMuted = true;
-    const request = v.play();
-    Promise.resolve(request).then(() => {
-      if (epoch !== videoEpoch || !canAnimate()) { if (!canAnimate()) v.pause(); return; }
-      if (v === films[front] && !v.paused) filmStatus('playing');
-    }).catch(err => {
-      if (epoch !== videoEpoch || err.name === 'AbortError') return;
-      if (v === films[front]) filmStatus(err.name === 'NotAllowedError' ? 'blocked' : 'error');
-    }).finally(() => { if (attempts.get(v) === marker) attempts.delete(v); });
-  }
-  function setFilm() {
-    videoEpoch++; endSwap(); videoFailed = false; front = 0;
-    const poster = mediaPath('films', index, 'webp');
-    $('filmWindow').style.backgroundImage = `url("${poster}")`;
-    $('filmSceneName').textContent = scenes[index];
-    $('filmFallback').href = mediaPath('films', index, 'mp4');
-    films.forEach((v, i) => {
-      v.pause(); attempts.delete(v); v.classList.toggle('is-front', i === 0);
-      v.poster = poster; v.preload = i === 0 ? 'auto' : 'metadata';
-      v.src = mediaPath('films', index, 'mp4'); v.load();
-    });
-    filmStatus(still ? 'still' : 'loading');
-    playFilm();
-  }
-  function crossfade() {
-    const old = films[front];
-    if (!canAnimate() || swapping || old.paused || !Number.isFinite(old.duration) || old.duration < 3 || old.duration - old.currentTime > 0.85) return;
-    const nextIndex = 1 - front, next = films[nextIndex], epoch = videoEpoch;
-    if (next.readyState < 2) return; // Native loop remains the safe fallback.
-    swapping = true;
-    try { next.currentTime = 0; } catch (_) { swapping = false; return; }
-    next.play().then(() => {
-      if (epoch !== videoEpoch) return;
-      if (!canAnimate()) { next.pause(); swapping = false; return; }
-      next.classList.add('is-front'); old.classList.remove('is-front'); front = nextIndex;
-      swapTimer = setTimeout(() => {
-        if (epoch !== videoEpoch) return;
-        old.pause(); try { old.currentTime = 0; } catch (_) {}
-        swapping = false; swapTimer = 0;
-      }, 700);
-    }).catch(() => { swapping = false; });
-  }
-  films.forEach(v => {
-    v.addEventListener('canplay', () => { if (v === films[front]) playFilm(); });
-    v.addEventListener('playing', () => { if (v === films[front] && canAnimate()) filmStatus('playing'); });
-    v.addEventListener('timeupdate', () => { if (v === films[front]) crossfade(); });
-    v.addEventListener('waiting', () => { if (v === films[front] && canAnimate()) filmStatus('loading'); });
-    v.addEventListener('error', () => {
-      if (v !== films[front]) return;
-      videoFailed = true; films.forEach(x => x.pause()); filmStatus('error');
-    });
-  });
-  function retryFilm() {
-    if (videoFailed) return;
-    if (canAnimate()) playFilm();
-  }
-  // Recover muted autoplay on real user gestures; no video play button is required.
-  document.addEventListener('pointerdown', retryFilm, {passive: true});
-  document.addEventListener('touchend', retryFilm, {passive: true});
-  document.addEventListener('keydown', retryFilm);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) pauseFilms(); else retryFilm(); });
-  window.addEventListener('pageshow', retryFilm);
-  window.addEventListener('online', () => { if (videoFailed) setFilm(); else retryFilm(); });
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(entries => {
-      inView = entries[0].isIntersecting;
-      if (inView) retryFilm(); else pauseFilms();
-    }, {threshold: 0.01}).observe($('filmWindow'));
-  }
-  $('still').addEventListener('change', () => {
-    still = $('still').checked; motionOverride = true;
-    try { localStorage.setItem('dj-letter-still', still ? '1' : '0'); } catch (_) {}
-    if (still) pauseFilms(); else { videoFailed = false; filmStatus('loading'); playFilm(); }
-  });
-  reduce.addEventListener?.('change', e => {
-    if (motionOverride) return;
-    still = e.matches; $('still').checked = still;
-    if (still) pauseFilms(); else retryFilm();
-  });
+  const scenery = window.DJ_SCENERY;
+  const setFilm = () => scenery.setEpisode(index, scenes[index]);
+  const retryFilm = () => scenery.resume();
   function clearAudioTimers() {
     clearTimeout(transition); clearInterval(fade); clearTimeout(loadTimer);
     transition = fade = loadTimer = 0;
@@ -186,6 +79,7 @@
     updateControls(); retryFilm();
   }
   function startNarration() {
+    scenery.userStart();
     invalidateAudio(); phase = 'dj'; fallbackUsed = false;
     $('musicSource').hidden = true; audio.src = mediaPath('voice', index, 'mp3');
     audio.volume = volume; audioStatus('오늘의 편지를 준비합니다.'); playProgram();
@@ -212,6 +106,7 @@
     transition = setTimeout(() => { if (wanted && phase === 'transition' && expected === ticket) beginMusic(); }, 1800);
   }
   function toggleProgram() {
+    scenery.userStart();
     if (phase === 'idle' || phase === 'complete') { startNarration(); return; }
     if (phase === 'transition') {
       wanted = !wanted; clearTimeout(transition);
@@ -287,7 +182,7 @@
     updateControls(); setFilm(); renderCards(); toast('');
   }
   $('mainPlay').onclick = startNarration; $('readerPlay').onclick = startNarration;
-  $('stagePlay').onclick = toggleProgram; $('musicOnly').onclick = beginMusic;
+  $('stagePlay').onclick = toggleProgram; $('musicOnly').onclick = () => { scenery.userStart(); beginMusic(); };
   $('stageNext').onclick = () => { const resume = wanted; setEpisode(index + 1); if (resume) startNarration(); };
   $('wide').onclick = () => {
     const wide = $('listen').classList.toggle('is-wide');

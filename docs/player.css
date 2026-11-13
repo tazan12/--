@@ -13,3 +13,11 @@
 
 /* Settings remain in normal flow, including narrow screens. */
 .dj-options[open]{flex:1 1 100%;order:3}.dj-options-panel{position:static;right:auto;top:auto;margin-top:8px;min-width:0;width:100%;max-width:100%;box-shadow:none}.dj-options-panel small{max-width:none}
+
+/* STABLE_SINGLE_DECODER: no invisible second decoder or stale front class. */
+.dj-scene-video{z-index:2!important;opacity:0!important;transition:opacity .3s ease!important;pointer-events:none!important;display:block!important;visibility:visible!important;filter:none!important}
+.dj-film-window.native-visible .dj-scene-video{opacity:1!important}
+.dj-scene-motion{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;display:block;pointer-events:none}
+.dj-scene-motion[hidden]{display:none!important}
+.dj-film-topline{z-index:4!important;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.dj-scene-video{transition:none!important}}

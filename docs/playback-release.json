@@ -1,0 +1,101 @@
+{
+  "release": "20261114-stable2",
+  "episodes": [
+    {
+      "episode": 1,
+      "mp4": 237972,
+      "webp": 93818,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "16a1320b99f5065fdd8632450f07e5d264877137ec181854dfc20239c03e492d"
+    },
+    {
+      "episode": 2,
+      "mp4": 1827202,
+      "webp": 2692218,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "a3d5421c10e04c2e11d09511e439e37d1dfd2d8306bad2943166aac84bebd50c"
+    },
+    {
+      "episode": 3,
+      "mp4": 735701,
+      "webp": 754012,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "a70faedaafdb22435e986d9d046e1a7d2d15d851544ea8c4547ea16eed2690c1"
+    },
+    {
+      "episode": 4,
+      "mp4": 1283634,
+      "webp": 1600870,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "8e1e521ca3bb27be8caa48b3c1133d6a3e49f4e4fc15bf43ac07b2c4bb15bfdb"
+    },
+    {
+      "episode": 5,
+      "mp4": 1036108,
+      "webp": 1063980,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "675bdab044db736b34159224eed9023c26e17e032b752d8c99290de9cff0127b"
+    },
+    {
+      "episode": 6,
+      "mp4": 956014,
+      "webp": 1287802,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "86825726bd98002beab6d7b64f296c10e4195142188d8a07f091ddec5e9a4345"
+    },
+    {
+      "episode": 7,
+      "mp4": 3025930,
+      "webp": 3047042,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "045f256560d6ba18aeb2b57d851ee0b1fa27dbf1eefbdaf378ad0788758530ae"
+    },
+    {
+      "episode": 8,
+      "mp4": 1528911,
+      "webp": 2154518,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "926c79f5c75a6c0f77db21a4cbc179506be9c75581ff08ca11640a2cac94d934"
+    },
+    {
+      "episode": 9,
+      "mp4": 426930,
+      "webp": 601154,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "6cb4a9debc8f685bb7cf959d2d4c7afe91fdd6572434070aaf85766f69721a56"
+    },
+    {
+      "episode": 10,
+      "mp4": 3823707,
+      "webp": 5177036,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "2371201c6de012d9d739196b4ac350b37667f067712a7bfd97ac7ee64bd236dd"
+    },
+    {
+      "episode": 11,
+      "mp4": 3744938,
+      "webp": 4670686,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "15f327d3e2135c27dbdf0c9e7f5d8b6304a61ebdf5ec55e6d32cd07d481f4e7b"
+    },
+    {
+      "episode": 12,
+      "mp4": 1329580,
+      "webp": 1241288,
+      "frames": 168,
+      "profile": "Constrained Baseline",
+      "sha256": "b4ddc1a3c3d19e53b2eca15c825881954bc4c9d8a8718dd07a1b0603d6b9c6c1"
+    }
+  ]
+}

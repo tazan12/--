@@ -8,11 +8,12 @@
 <meta property="og:description" content="이야기와 음악 사이, 마음을 쉬어 가는 시간"/>
 <meta property="og:image" content="https://tazan12.github.io/--/assets/dj-cover.webp"/>
 <meta name="theme-color" content="#12192b"/>
-<meta name="dj-release" content="20261114-natural1"/>
+<meta name="dj-release" content="20261114-stable2"/>
 <link rel="canonical" href="https://tazan12.github.io/--/"/>
-<link rel="stylesheet" href="./player.css?v=20261114-natural1"/>
-<script src="./episodes.js?v=20261114-natural1" defer></script>
-<script src="./player.js?v=20261114-natural1" defer></script>
+<link rel="stylesheet" href="./player.css?v=20261114-stable2"/>
+<script src="./episodes.js?v=20261114-stable2" defer></script>
+<script src="./scenery.js?v=20261114-stable2" defer></script>
+<script src="./player.js?v=20261114-stable2" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#stage">음악 감상으로 바로 가기</a>
@@ -30,9 +31,8 @@
 </div>
 <div class="dj-stage" id="stage">
 <div class="dj-film-window" id="filmWindow">
-<video class="dj-scene-video is-front" id="film" muted loop playsinline webkit-playsinline preload="auto" poster="./assets/films/ep01.webp" aria-label="곡에 어울리는 자연 풍경" tabindex="-1"></video>
-<video class="dj-scene-video" id="filmNext" muted loop playsinline webkit-playsinline preload="metadata" aria-hidden="true" tabindex="-1"></video>
-<div class="dj-film-topline"><span id="filmSceneName">달빛이 머무는 밤</span><span id="filmState">풍경을 준비하고 있어요</span></div>
+<video class="dj-scene-video" id="film" muted loop playsinline webkit-playsinline preload="auto" poster="./assets/films/ep01.webp" aria-label="곡에 어울리는 자연 풍경" tabindex="-1"></video>
+<img id="filmMotion" class="dj-scene-motion" alt="곡에 맞는 실제 풍경의 호환 재생" hidden decoding="async"/><div class="dj-film-topline"><span id="filmSceneName">달빛이 머무는 밤</span><span id="filmState">풍경을 준비하고 있어요</span></div>
 </div>
 <div class="dj-stage-copy">
 <span id="stageEpisode">LETTER 01 / 12</span><h2 id="stageTitle">이름 없는 편지를 위한 밤</h2><p id="stageMusic">베토벤 · 월광 소나타 · 제1악장</p>
@@ -47,7 +47,7 @@
 <details class="dj-options"><summary>감상 설정</summary><div class="dj-options-panel">
 <label><input id="still" type="checkbox"/>풍경을 정지 화면으로 보기</label>
 <label for="volume">소리 크기 <input id="volume" type="range" min="0" max="100" value="75"/></label>
-<small>기기의 동작 줄이기 설정을 따릅니다. 필요할 때 감상 방식을 바꿀 수 있습니다.</small>
+<small>동작 줄이기는 처음에만 따릅니다. 편지 듣기를 누르면 풍경도 함께 시작합니다. 영상 재생이 제한되면 같은 실사 장면의 호환 형식으로 이어집니다.</small>
 </div></details><span class="dj-status-label">무음 실사 풍경 · 자동으로 이어집니다</span>
 </div>
 <a id="filmFallback" class="dj-source-help" href="./assets/films/ep01.mp4" target="_blank" rel="noopener noreferrer" hidden>연결이 어려우면 영상 원본 열기</a>
