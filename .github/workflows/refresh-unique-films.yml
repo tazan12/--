@@ -25,8 +25,10 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Confirm bundled encoder
+      - name: Install standard Ubuntu video encoder
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
           ffmpeg -version | head -1
           python3 --version
 
