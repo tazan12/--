@@ -1,0 +1,113 @@
+/* Journal focus: scoped layout refinement. The verified scenery player is untouched. */
+body[data-app-view=journal] .mind-journal{max-width:1180px;padding:27px 28px 64px}
+body[data-app-view=journal] .mind-heading{margin-bottom:20px;gap:24px;align-items:center}
+body[data-app-view=journal] .mind-heading h1{font-size:30px;letter-spacing:-1.2px;margin:5px 0 7px;line-height:1.45}
+body[data-app-view=journal] .mind-heading p{font-size:12px;line-height:1.8;margin:0}
+body[data-app-view=journal] .mind-heading .mind-eyebrow{font-size:9px;letter-spacing:2px}
+.journal-heading-tools{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex:none}
+body[data-app-view=journal] .theme-choices{display:flex;gap:5px;margin:0;padding:4px;border:1px solid var(--line);border-radius:26px;background:var(--mind-panel)}
+body[data-app-view=journal] .theme-choices button{display:flex;align-items:center;gap:6px;padding:7px 10px;min-height:34px;border-radius:20px;border:1px solid transparent;background:transparent;font-size:11px;white-space:nowrap;box-shadow:none}
+body[data-app-view=journal] .theme-choices button:hover{transform:none;background:#ffffff08}
+body[data-app-view=journal] .theme-choices button[aria-pressed=true]{border-color:var(--line);background:var(--mind-accent);color:var(--bg)}
+.theme-dot{display:inline-block;width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1px #ffffff45;background:#a5adcc;flex:none}
+[data-theme-choice=forest] .theme-dot{background:#a1b89a}[data-theme-choice=rose] .theme-dot{background:#d9acb8}
+body[data-app-view=journal] .mind-heading .quiet-button{font-size:11px;padding:4px 8px;border:0;color:var(--muted);margin:0;min-height:30px;border-radius:6px;text-decoration:underline;text-underline-offset:4px}
+.journal-sound-panel{position:sticky;top:8px;z-index:18;display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:13px;align-items:center;padding:13px 16px;margin:0 0 22px;background:var(--mind-panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 18px #0002}
+.journal-sound-cover{width:40px;height:40px;object-fit:cover;border-radius:9px;opacity:.85}
+.journal-sound-meta{min-width:0;display:flex;flex-direction:column;gap:2px}
+.journal-sound-caption{font-size:10px;color:var(--gold);letter-spacing:.5px}
+.journal-sound-meta select{border:0;padding:3px 20px 3px 0;background:transparent;color:var(--text);font:inherit;font-size:13px;width:min(100%,540px);text-overflow:ellipsis;min-width:0;cursor:pointer;outline-offset:2px}
+.journal-sound-meta select option{background:var(--mind-panel);color:var(--text)}
+.journal-sound-status{font-size:10px;color:var(--muted);line-height:1.4;min-height:14px}
+.journal-sound-controls{display:flex;gap:9px;align-items:center}
+.journal-sound-controls button{font-size:12px;border-radius:22px;border:1px solid var(--line);background:transparent;color:var(--text);min-height:40px;padding:8px 14px;white-space:nowrap}
+.journal-sound-controls #journalMusicToggle{background:var(--mind-accent);color:var(--bg);border-color:var(--mind-accent);min-width:92px;font-weight:600}
+.journal-sound-controls #journalMusicToggle[aria-pressed=false]{background:transparent;color:var(--text);border-color:var(--line)}
+.journal-volume{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
+.journal-volume input{width:78px;accent-color:var(--gold);height:24px;min-width:0}
+#journalMusicSource{font-size:10px;color:var(--gold)}
+body[data-app-view=journal] .journal-layout{grid-template-columns:244px minmax(0,1fr);gap:24px;align-items:start}
+body[data-app-view=journal] .calendar-box,body[data-app-view=journal] .memory-box{padding:17px;border-radius:14px;background:color-mix(in srgb,var(--mind-panel) 72%,transparent)}
+body[data-app-view=journal] .journal-side{gap:16px}
+body[data-app-view=journal] .calendar-heading{margin-bottom:10px}
+body[data-app-view=journal] .calendar-heading h2{font-size:15px}
+body[data-app-view=journal] .month-summary{font-size:11px;line-height:1.7}
+body[data-app-view=journal] .memory-box .section-label{margin-bottom:9px}
+body[data-app-view=journal] .memory-box h2{font-size:16px}
+body[data-app-view=journal] .entry-list{max-height:380px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+body[data-app-view=journal] .journal-paper{padding:27px 34px 26px;border-radius:16px;box-shadow:0 14px 40px #0002}
+body[data-app-view=journal] .paper-date{padding-bottom:16px;gap:16px}
+body[data-app-view=journal] .paper-date h2{font-size:25px;margin:4px 0 0;line-height:1.4}
+body[data-app-view=journal] .paper-eyebrow{font-size:9px;letter-spacing:1.8px}
+body[data-app-view=journal] .mood-field{margin:18px 0 12px;padding:0}
+body[data-app-view=journal] .mood-field legend{font-size:12px;margin-bottom:9px}
+body[data-app-view=journal] .mood-pick{gap:6px}
+body[data-app-view=journal] .mood-pick button{padding:7px 11px;font-size:11px;min-height:34px}
+body[data-app-view=journal] .mood-whisper{font-size:11px;margin:9px 0 0;line-height:1.8}
+.writing-help{border-top:1px solid var(--mind-edge);border-bottom:1px solid var(--mind-edge);margin:0 0 17px;color:var(--mind-ink)}
+.writing-help summary{padding:9px 1px;font-size:11px;cursor:pointer;opacity:.72;min-height:36px}
+.writing-help .writing-prompt{margin:0 0 12px;padding:12px 15px;border-radius:8px}
+.writing-help .writing-prompt>span{font-size:9px}.writing-help .writing-prompt p{font-size:13px;margin:6px 0}
+body[data-app-view=journal] .journal-title-input{font-size:23px;margin:3px 0 13px;padding:4px 0;line-height:1.6}
+body[data-app-view=journal] .journal-body{font-size:16px;line-height:2.05;min-height:270px;resize:vertical;padding:4px 0}
+body[data-app-view=journal] .writing-meta{padding:10px 0;margin:0;font-size:10px;border-top:1px solid var(--mind-edge)}
+body[data-app-view=journal] .kindness-label{font-size:12px;margin-top:17px}
+body[data-app-view=journal] .journal-track{margin-top:18px;padding:15px 0}
+body[data-app-view=journal] .paper-actions{margin-top:15px}
+body[data-app-view=journal] .privacy-footnote{margin-top:15px;font-size:10px;line-height:1.8}
+body[data-app-view=journal] .journal-recommend{margin-top:18px;padding:17px 20px;border-radius:13px;box-shadow:none}
+body[data-app-view=journal] .journal-recommend h3{font-size:17px;margin:4px 0}
+body[data-app-view=journal] .journal-recommend p{font-size:11px;margin:3px 0}
+body[data-app-view=journal] .journal-recommend button{font-size:11px;white-space:nowrap;min-height:38px}
+body[data-app-view=journal] #miniRadio{display:none!important}
+body[data-app-view=journal] .dj-app>footer{padding-bottom:42px}
+@media(min-width:1000px){body[data-app-view=listen] .dj-hero{grid-template-columns:minmax(250px,.8fr) minmax(0,1.2fr);gap:36px;padding-top:34px}body[data-app-view=listen] .dj-stage-copy{padding:20px 24px}body[data-app-view=listen] .dj-intro h1{font-size:43px}}
+@media(max-width:1000px) and (min-width:761px){body[data-app-view=journal] .mind-journal{padding-left:22px;padding-right:22px}body[data-app-view=journal] .journal-layout{grid-template-columns:216px minmax(0,1fr);gap:18px}body[data-app-view=journal] .journal-paper{padding:24px}.journal-volume{display:none}}
+@media(max-width:760px){
+ body[data-app-view=journal] .mind-journal{padding:17px 16px 28px}
+ body[data-app-view=journal] .mind-heading{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:14px}
+ body[data-app-view=journal] .mind-heading .mind-eyebrow{display:none}
+ body[data-app-view=journal] .mind-heading h1{font-size:24px;letter-spacing:-.9px;margin:0 0 5px;line-height:1.4}
+ body[data-app-view=journal] .mind-heading p{font-size:11px;line-height:1.75}
+ .journal-heading-tools{display:contents}
+ body[data-app-view=journal] .mind-heading .quiet-button{grid-column:2;grid-row:1;align-self:start;padding:4px 0;font-size:10px;min-height:36px}
+ body[data-app-view=journal] .theme-choices{grid-column:1/-1;grid-row:2;justify-content:space-between;border-radius:11px;padding:3px;gap:4px}
+ body[data-app-view=journal] .theme-choices button{flex:1;justify-content:center;font-size:11px;padding:7px 5px;min-height:36px;border-radius:8px}
+ .journal-sound-panel{top:4px;grid-template-columns:30px minmax(0,1fr) auto;gap:9px;padding:11px 10px;margin-bottom:13px;border-radius:12px}
+ .journal-sound-cover{width:30px;height:30px;border-radius:7px}
+ .journal-sound-caption{font-size:9px;letter-spacing:0}
+ .journal-sound-meta select{font-size:12px;padding:4px 14px 4px 0;min-height:30px}
+ .journal-sound-status{font-size:9px;min-height:13px}
+ .journal-sound-controls{display:grid;grid-template-columns:1fr;gap:4px}
+ .journal-sound-controls button{min-height:36px;font-size:11px;padding:6px 11px}
+ .journal-sound-controls #journalMusicToggle{min-width:78px}
+ .journal-sound-controls #journalMusicNext{min-height:24px;padding:1px 8px;border:0;font-size:10px;color:var(--muted)}
+ .journal-volume{display:none}
+ body[data-app-view=journal] .mobile-calendar-jump{margin:0 0 12px;min-height:39px;padding:8px 12px;font-size:11px;background:transparent;border-radius:9px}
+ body[data-app-view=journal] .journal-layout{display:flex;gap:15px;flex-direction:column}
+ body[data-app-view=journal] .journal-side{display:none;order:-1;width:100%;gap:12px}
+ body[data-app-view=journal] .calendar-is-open .journal-side{display:grid;grid-template-columns:1fr}
+ body[data-app-view=journal] .calendar-box,body[data-app-view=journal] .memory-box{padding:16px}
+ body[data-app-view=journal] .calendar-days button{height:40px}
+ body[data-app-view=journal] .journal-paper{padding:20px 18px;border-radius:13px}
+ body[data-app-view=journal] .paper-date{gap:10px;padding-bottom:13px}
+ body[data-app-view=journal] .paper-date h2{font-size:21px}
+ body[data-app-view=journal] .paper-eyebrow{font-size:8px;letter-spacing:1.5px}
+ body[data-app-view=journal] .date-picker input{max-width:123px;min-height:34px;font-size:11px}
+ body[data-app-view=journal] .mood-field{margin:15px 0 10px}
+ body[data-app-view=journal] .mood-pick{gap:5px}
+ body[data-app-view=journal] .mood-pick button{font-size:11px;padding:7px 9px;min-height:35px}
+ body[data-app-view=journal] .mood-whisper{font-size:10px;margin-top:7px}
+ .writing-help{margin-bottom:12px}.writing-help summary{font-size:10px;padding:8px 0}
+ body[data-app-view=journal] .journal-title-input{font-size:20px;min-height:40px;margin:2px 0 9px}
+ body[data-app-view=journal] .journal-body{font-size:16px;min-height:235px;line-height:1.95}
+ body[data-app-view=journal] .journal-track{margin-top:14px}
+ body[data-app-view=journal] .journal-recommend{padding:15px;align-items:center;gap:9px}
+ body[data-app-view=journal] .journal-recommend h3{font-size:15px}
+ body[data-app-view=journal] .journal-recommend .mind-eyebrow{font-size:8px;letter-spacing:1px}
+ body[data-app-view=journal] .journal-recommend p{font-size:10px}
+ body[data-app-view=journal] .journal-alert{bottom:calc(78px + env(safe-area-inset-bottom))}
+ body[data-app-view=journal] .dj-app>footer{padding-bottom:88px}
+}
+@media(max-width:350px){body[data-app-view=journal] .mind-journal{padding-left:12px;padding-right:12px}body[data-app-view=journal] .mind-heading h1{font-size:21px}body[data-app-view=journal] .journal-paper{padding:17px 14px}.journal-sound-panel{grid-template-columns:minmax(0,1fr) auto}.journal-sound-cover{display:none}}
+@media print{.journal-sound-panel,.journal-heading-tools,.writing-help{display:none!important}}
