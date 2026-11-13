@@ -6,7 +6,7 @@ const dj=new Audio(),music=new Audio();
 dj.preload='none';music.preload='none'; music.volume=.7;
 const moods=['전체','사랑','그리움','위로','휴식','회복','고요','상실','기억','동행'];
 let mood='전체',fadeTimer=null,scheduled=null;
-const videoRoot='https://dj-letter-radio-2026.higgsfield.app/assets/films/';
+const videoRoot='./assets/films/';
 const pad=n=>String(n).padStart(2,'0');
 const time=n=>Number.isFinite(n)?Math.floor(n/60)+':'+pad(Math.floor(n%60)):'0:00';
 function toast(s){$('toast').hidden=!s;$('toast').textContent=s;}
@@ -15,7 +15,7 @@ function setEpisode(i){audioStop();index=(i+stories.length)%stories.length;phase
 $('stageTitle').textContent=s.title;$('stageEpisode').textContent='LETTER '+pad(index+1)+' / 12';$('stageMusic').textContent=s.composer+' · '+s.music;
 $('readerTitle').textContent=s.title;$('readerMood').textContent=s.mood+'에 관한 이야기';$('readerText').textContent=s.story;
 $('stageStatus').textContent='이야기를 펼칠 준비가 되었습니다.';$('stagePlay').textContent='▶';$('clock').textContent='0:00';$('duration').textContent='0:00';$('seek').value=0;
-dj.src=s.dj;music.src=s.src;
+dj.src='./assets/voice/ep'+pad(index+1)+'.mp3';music.src=s.src;
 const film=$('film'),key='ep'+pad(index+1);film.pause();film.poster=videoRoot+key+'.webp';$('filmSource').src=videoRoot+key+'.mp4';film.load();if(!motionOff)film.play().catch(()=>{});
 renderCards();toast('');
 }
