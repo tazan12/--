@@ -41,7 +41,7 @@
     if (text) toastTimer = setTimeout(() => { $('toast').hidden = true; }, 7000);
   }
   function filmStatus(state) {
-    $('filmState').textContent = labels[state];
+    if ($('filmState').textContent !== labels[state]) $('filmState').textContent = labels[state];
     $('stage').dataset.filmState = state;
     $('filmFallback').hidden = state !== 'error';
   }
@@ -91,7 +91,8 @@
     swapping = true;
     try { next.currentTime = 0; } catch (_) { swapping = false; return; }
     next.play().then(() => {
-      if (epoch !== videoEpoch || !canAnimate()) { next.pause(); swapping = false; return; }
+      if (epoch !== videoEpoch) return;
+      if (!canAnimate()) { next.pause(); swapping = false; return; }
       next.classList.add('is-front'); old.classList.remove('is-front'); front = nextIndex;
       swapTimer = setTimeout(() => {
         if (epoch !== videoEpoch) return;

@@ -1,31 +1,21 @@
-# DJ의 편지 — GitHub Pages 정식 이전
+# DJ의 편지
 
-무료 공개 클래식 라디오 서비스의 GitHub Pages 정적 버전입니다.
+무료 클래식 라디오와 자연 풍경 감상 웹앱입니다.
 
-## 파일과 배포 구조
-- **사이트 소스:** `docs/index.html`, `docs/app.js`, `docs/style.css`
-- **영상 및 표지:** `docs/assets/films/ep01-ep12.mp4`, 각 포스터, `docs/assets/dj-cover.webp`
-- **한국어 남성 DJ 음성:** `docs/assets/voice/ep01-ep12.mp3`
-- **자동 배포:** `.github/workflows/deploy-dj-letter.yml`
-- **영상·음성 이관 확인:** `.github/workflows/migrate-dj-media.yml` 실행 성공 (미디어는 GitHub에 영구 저장)
-- **역사적 React 코드:** `dj-letter/...` 백업본이며 Pages의 배포 대상은 아닙니다.
+- 운영 주소: https://tazan12.github.io/--/
+- 배포: GitHub Pages, `docs/` 폴더
+- 콘텐츠: 남성 DJ 낭독 12편, 서로 다른 실사 영상 12편, 작품별 이야기
+- 영상/음성/표지: `docs/assets/`에 독립 보관
+- 클래식 녹음: Wikimedia Commons의 외부 연주 파일. 원본 서버의 접속 제한은 별도입니다.
 
-현재 배포용 영상과 DJ 음성은 **Higgsfield 웹앱 서비스가 중단되어도 작동하도록 GitHub에 독립 저장**했습니다. 클래식 음악의 실연 녹음만 Wikimedia Commons 외부 스트리밍을 사용하므로 원본 서버가 사용 제한을 걸면 개별 곡 재생이 불안정할 수 있습니다.
+## 플레이어
+`episodes.js`는 이야기 정보, `player.js`는 재생 상태, `player.css`는 화면 배치입니다.
+무음 영상은 자동재생을 요청하며 반복 경계에서 두 영상 사이를 짧게 전환합니다.
+영상 재생 버튼은 표시하지 않습니다. 자동재생을 막는 브라우저에서는 실제 사용자의 터치나 키 입력에서 다시 시도합니다.
+기기의 동작 줄이기 설정과 감상 설정의 정지 화면 선택은 존중합니다.
+음성/음악은 하나의 audio 요소를 재사용하여 중복 재생을 방지합니다.
 
-## GitHub Pages 사이트 활성화 — 저장소 관리자 1회 작업
-- 현재 이 저장소는 **private** 상태이며 GitHub Pages 사이트는 아직 비활성화되어 있습니다.
-- GitHub Free 이용자는 저장소를 **Public**으로 변경해야 Pages를 공개 배포할 수 있습니다. GitHub Pro 등 Pages 사용권이 있는 경우 private로 유지할 수도 있습니다.
-- 저장소 [설정](https://github.com/tazan12/--/settings) → **Pages** → **Build and deployment** → **Source: GitHub Actions**를 선택합니다.
-- 이후 [배포 워크플로](https://github.com/tazan12/--/actions/workflows/deploy-dj-letter.yml) → **Run workflow**를 누릅니다.
-- 정상 완료하면 예상 주소는 `https://tazan12.github.io/--/`입니다. 실제 공개 여부를 반드시 확인하세요.
-- 사전에 동의 없이 기존 Higgsfield 사이트를 먼저 중단하지 마세요. 사이트 전환 중 서비스 공백이 발생할 수 있습니다.
-
-## 기존 Higgsfield 사이트 철수
-1. GitHub Pages에서 12편 목록·영상·음성 재생을 확인합니다.
-2. 기존 Higgsfield 배포본에서 공개 서비스를 중단하거나, 새 Pages 주소로 이전 안내를 설정합니다.
-3. Higgsfield 커뮤니티 목록에서도 공개 게시를 해제합니다.
-
-## 무료 배포와 권리
-- 무료·비상업적 공개를 전제합니다. 무료라도 저작권·녹음 저작인접권·클립 이용 조건은 확인해야 합니다.
-- 영상은 Mixkit Free License 출처의 클립을 이야기 화면용으로 편집한 자료입니다. 원본을 개별 stock 영상으로 재배포·판매해서는 안 됩니다.
-- DJ 음성은 유명인의 목소리를 복제하지 않은 AI 생성 낭독입니다.
+## 권리
+무료 공개라도 녹음/영상별 이용허락을 따라야 합니다.
+영상 출처는 `docs/video-sources.html`과 `docs/assets/films/manifest.json`에 기록되어 있습니다.
+`dj-letter/`는 이전 제작 과정의 코드 기록이며 배포에 포함되지 않습니다.

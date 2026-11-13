@@ -1,31 +1,70 @@
 <!doctype html>
-<html lang="ko"><head>
+<html lang="ko">
+<head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>DJ의 편지 | 서사가 있는 클래식 라디오</title>
-<meta name="description" content="따뜻한 한국어 남성 DJ가 클래식 음악과 함께 문학적인 이야기를 들려드립니다. 무료 감상 라디오 서재."/>
+<meta name="description" content="낮고 따뜻한 남성 DJ의 편지, 클래식 연주, 자연스럽게 흐르는 열두 가지 풍경. 무료 클래식 감상 서재."/>
 <meta property="og:title" content="DJ의 편지 | 서사가 있는 클래식 라디오"/>
-<meta property="og:description" content="낮고 따뜻한 남성 DJ와 함께하는 12편의 클래식 음악 편지"/>
+<meta property="og:description" content="이야기와 음악 사이, 마음을 쉬어 가는 시간"/>
 <meta property="og:image" content="https://tazan12.github.io/--/assets/dj-cover.webp"/>
-<link rel="stylesheet" href="./style.css?v=20261114c"/>
+<meta name="theme-color" content="#12192b"/>
+<meta name="dj-release" content="20261114-natural1"/>
+<link rel="canonical" href="https://tazan12.github.io/--/"/>
+<link rel="stylesheet" href="./player.css?v=20261114-natural1"/>
+<script src="./episodes.js?v=20261114-natural1" defer></script>
+<script src="./player.js?v=20261114-natural1" defer></script>
 </head>
-<body><main class="dj-app">
-<header class="dj-header"><div class="dj-mark">☾ DJ의 편지 <small>CLASSICAL · LETTERS · REST</small></div><nav><a href="#listen">오늘의 편지</a><a href="#episodes">이야기 서재</a><a href="#write">나에게 쓰는 편지</a></nav></header>
-<section class="dj-hero" id="listen"><div class="dj-stars" aria-hidden="true"></div><div class="dj-intro"><div class="dj-kicker">LATE NIGHT RADIO · WARM VOICE</div><h1>오늘은 음악에게<br/><em>마음을 맡겨요.</em></h1><p>따뜻한 이야기가 먼저 다가오고, 클래식이 이어집니다.<br/>지친 하루 끝에 당신에게 보내는 작은 편지.</p><div class="dj-cta"><button id="mainPlay" type="button">▶ DJ의 편지 듣기</button><a href="#episodes">이야기 둘러보기</a></div><p class="dj-hint">낮고 편안한 한국어 남성 DJ · 열두 통의 음악 편지 · 무료 감상</p></div>
+<body>
+<a class="skip-link" href="#stage">음악 감상으로 바로 가기</a>
+<main class="dj-app">
+<header class="dj-header">
+<a class="dj-mark" href="./">☾ DJ의 편지 <small>CLASSICAL · LETTERS · REST</small></a>
+<nav aria-label="주 메뉴"><a href="#listen">오늘의 편지</a><a href="#episodes">이야기 서재</a><a href="#write">나에게 쓰는 편지</a></nav>
+</header>
+<section class="dj-hero" id="listen" aria-label="오늘의 클래식 감상">
+<div class="dj-intro"><div class="dj-kicker">A LITTLE ROOM FOR YOUR HEART</div>
+<h1>오늘은 음악에게<br/><em>마음을 맡겨요.</em></h1>
+<p>이야기가 다가오고, 음악이 곁에 머무는 시간.<br/>풍경은 조용히 흐르도록 두세요.</p>
+<div class="dj-cta"><button id="mainPlay" type="button">편지 듣기</button><a href="#episodes">이야기 둘러보기</a></div>
+<p class="dj-hint">한국어 남성 DJ · 열두 통의 음악 편지 · 무료 감상</p>
+</div>
 <div class="dj-stage" id="stage">
-<video class="dj-scene-video" id="film" muted loop playsinline webkit-playsinline preload="auto" src="./assets/films/ep01.mp4?v=20261114" poster="./assets/films/ep01.webp?v=20261114" aria-label="클래식 곡에 어울리는 자연 풍경 영상"></video>
-<div class="dj-film-shade" aria-hidden="true"></div>
-<div class="dj-film-topline"><span class="dj-film-live"><span class="dj-film-live-dot" aria-hidden="true"></span><span id="filmState" role="status" aria-live="polite">자연 영상 준비 중</span></span><span id="filmSceneName">달빛 · 월광 소나타</span></div>
-<button type="button" id="filmToggle" class="dj-film-center-play" aria-label="영상 재생" title="영상 재생">▶</button>
-<div class="dj-stage-copy"><span id="stageEpisode">LETTER 01 / 12</span><h2 id="stageTitle"></h2><p id="stageMusic"></p><div class="dj-status" id="stageStatus">이야기를 펼칠 준비가 되었습니다.</div>
-<button class="dj-round" id="stagePlay" aria-label="재생">▶</button><button class="dj-skip" id="stageNext" aria-label="다음 이야기">⏭</button>
-<div class="dj-progress"><span id="clock">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" aria-label="음악 재생 위치"><span id="duration">0:00</span></div>
-<div class="dj-scene-buttonrow"><button id="wide">▣ 영상 크게 보기</button><button id="motion" type="button" aria-label="자연 영상 일시정지">영상 일시정지</button><span class="dj-status-label">소리 없는 실사 영상 · 곡별로 다른 풍경</span><a id="filmFallback" href="./assets/films/ep01.mp4" target="_blank" rel="noopener noreferrer" hidden>영상 파일 직접 열기</a></div>
-</div></div></section>
-<section class="dj-reader"><div class="dj-sectiontop"><span>✉ 오늘의 한 장</span><span>“음악은 끝내 다 하지 못한 마음의 문장입니다.”</span></div><div class="dj-letter">
-<div class="dj-letter-head">❦ <span id="readerMood">그리움에 관한 이야기</span></div><h2 id="readerTitle">이름 없는 편지를 위한 밤</h2><p id="readerText"></p><p class="dj-closing">오늘의 마음을 잠시 내려놓고, 이제 음악을 들어보세요.</p>
-<div class="dj-letter-bottom"><button id="readerPlay">▶ DJ 편지 처음부터</button><button id="musicOnly">♫ 바로 클래식 듣기</button></div></div></section>
-<section class="dj-library" id="episodes"><div class="dj-sectionhead"><div><span class="dj-kicker">YOUR MUSIC LIBRARY</span><h2>열두 통의 음악 편지</h2><p>지금 마음과 닮은 이야기를 골라 보세요.</p></div><div class="dj-tags" id="moods"></div></div><div class="dj-grid" id="cards"></div></section>
-<section class="dj-journal" id="write"><div><span class="dj-kicker">YOUR OWN LETTER</span><h2>오늘의 나에게,<br/>한 줄의 다정함을.</h2><p>당신의 문장은 이 기기의 브라우저에만 보관됩니다.</p></div><div><textarea id="note" rows="5" placeholder="오늘 나에게 꼭 들려주고 싶은 말은…"></textarea><button id="noteSave">나에게 편지 보관하기 ♡</button></div></section>
-<footer>DJ의 편지 · 무료 공개 클래식 감상. 역사적 사실과 문학적 해석을 구분해 감상해 주세요. 심리 치료를 대체하지 않습니다.<br/><a href="./video-sources.html" target="_blank" rel="noopener noreferrer">영상 이용허락</a> · <a href="https://commons.wikimedia.org/wiki/Category:Audio_files_of_classical_music" target="_blank" rel="noopener noreferrer">클래식 녹음 출처</a></footer>
+<div class="dj-film-window" id="filmWindow">
+<video class="dj-scene-video is-front" id="film" muted loop playsinline webkit-playsinline preload="auto" poster="./assets/films/ep01.webp" aria-label="곡에 어울리는 자연 풍경" tabindex="-1"></video>
+<video class="dj-scene-video" id="filmNext" muted loop playsinline webkit-playsinline preload="metadata" aria-hidden="true" tabindex="-1"></video>
+<div class="dj-film-topline"><span id="filmSceneName">달빛이 머무는 밤</span><span id="filmState">풍경을 준비하고 있어요</span></div>
+</div>
+<div class="dj-stage-copy">
+<span id="stageEpisode">LETTER 01 / 12</span><h2 id="stageTitle">이름 없는 편지를 위한 밤</h2><p id="stageMusic">베토벤 · 월광 소나타 · 제1악장</p>
+<div class="dj-audio-row">
+<button class="dj-round" id="stagePlay" type="button" aria-label="낭독·음악 듣기">▶</button>
+<button class="dj-skip" id="stageNext" type="button" aria-label="다음 음악 편지">⏭</button>
+<div class="dj-audio-caption"><span id="phaseLabel">편지와 음악</span><div class="dj-status" id="stageStatus" role="status" aria-live="polite">편지를 듣고, 음악을 맞이할 준비가 되었습니다.</div></div>
+</div>
+<div class="dj-progress"><span id="clock">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" disabled aria-label="낭독·음악 재생 위치"/><span id="duration">0:00</span></div>
+<div class="dj-scene-buttonrow">
+<button id="wide" type="button" aria-pressed="false">넓게 감상</button>
+<details class="dj-options"><summary>감상 설정</summary><div class="dj-options-panel">
+<label><input id="still" type="checkbox"/>풍경을 정지 화면으로 보기</label>
+<label for="volume">소리 크기 <input id="volume" type="range" min="0" max="100" value="75"/></label>
+<small>기기의 동작 줄이기 설정을 따릅니다. 필요할 때 감상 방식을 바꿀 수 있습니다.</small>
+</div></details><span class="dj-status-label">무음 실사 풍경 · 자동으로 이어집니다</span>
+</div>
+<a id="filmFallback" class="dj-source-help" href="./assets/films/ep01.mp4" target="_blank" rel="noopener noreferrer" hidden>연결이 어려우면 영상 원본 열기</a>
+<a id="musicSource" class="dj-source-help" href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer" hidden>연주 음원 원본 확인하기</a>
+</div>
+</div>
+</section>
+<section class="dj-reader" aria-labelledby="readerTitle"><div class="dj-sectiontop"><span>오늘의 한 장</span><span>음악은 끝내 다 하지 못한 마음의 문장입니다.</span></div>
+<div class="dj-letter"><div class="dj-letter-head" id="readerMood">그리움에 관한 이야기</div><h2 id="readerTitle">이름 없는 편지를 위한 밤</h2><p id="readerText"></p><p class="dj-closing">오늘의 마음을 잠시 내려놓고, 이제 음악을 들어보세요.</p>
+<div class="dj-letter-bottom"><button id="readerPlay" type="button">편지 처음부터 듣기</button><button id="musicOnly" type="button">바로 클래식 듣기</button></div></div>
+</section>
+<section class="dj-library" id="episodes" aria-labelledby="libraryTitle"><div class="dj-sectionhead"><div><span class="dj-kicker">YOUR MUSIC LIBRARY</span><h2 id="libraryTitle">열두 통의 음악 편지</h2><p>지금 마음과 닮은 이야기를 골라 보세요.</p></div><div class="dj-tags" id="moods" role="group" aria-label="감정별 이야기 선택"></div></div><div class="dj-grid" id="cards"></div></section>
+<section class="dj-journal" id="write" aria-labelledby="journalTitle"><div><span class="dj-kicker">YOUR OWN LETTER</span><h2 id="journalTitle">오늘의 나에게,<br/>한 줄의 다정함을.</h2><p>당신의 문장은 이 기기의 브라우저에만 보관됩니다.</p></div><div><textarea id="note" rows="5" aria-label="오늘 나에게 쓰는 편지" placeholder="오늘 나에게 꼭 들려주고 싶은 말은…"></textarea><button id="noteSave" type="button">나에게 편지 보관하기</button></div></section>
+<footer>DJ의 편지 · 무료 공개 클래식 감상<br/>역사적 사실과 문학적 해석을 구분해 감상해 주세요. 심리 치료를 대체하지 않습니다.<br/>
+<a href="./video-sources.html" target="_blank" rel="noopener noreferrer">영상 출처와 이용허락</a> · <a href="https://commons.wikimedia.org/wiki/Category:Audio_files_of_classical_music" target="_blank" rel="noopener noreferrer">클래식 녹음 출처</a>
+</footer>
 <div class="dj-toast" id="toast" role="status" hidden></div>
-</main><script src="./app.js?v=20261114c" defer></script></body></html>
+<audio id="programAudio" preload="none" hidden></audio>
+<noscript><p>음악과 풍경을 감상하려면 브라우저에서 JavaScript를 허용해 주세요.</p></noscript>
+</main></body></html>
