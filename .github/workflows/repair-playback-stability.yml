@@ -1,0 +1,71 @@
+name: DJ Letter - Stable scenery playback
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/repair-playback-stability.py
+      - scripts/scenery-stable.js
+      - .github/workflows/repair-playback-stability.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  repair-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout authorized DJ Letter repository
+        uses: actions/checkout@v4
+      - name: Install standard media encoder
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+      - name: Generate browser-compatible footage and migrate player
+        run: python3 scripts/repair-playback-stability.py
+      - name: Validate release before saving or deploying
+        run: |
+          node --check docs/player.js
+          node --check docs/scenery.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          d=Path('docs'); report=json.loads((d/'playback-release.json').read_text())
+          assert len(report['episodes'])==12
+          assert len({x['sha256'] for x in report['episodes']})==12
+          assert all(x['frames']>10 for x in report['episodes'])
+          h=(d/'index.html').read_text()
+          assert h.count('<video ')==1
+          assert 'id="filmMotion"' in h and 'filmToggle' not in h
+          assert '20261114-stable2' in h
+          for n in range(1,13):
+              assert (d/f'assets/films/ep{n:02}.compat.mp4').is_file()
+              assert (d/f'assets/films/ep{n:02}.motion.webp').is_file()
+              assert (d/f'assets/voice/ep{n:02}.mp3').is_file()
+          print('PASS: all 12 scenes, moving fallbacks, male narration and UI references')
+          PY
+      - name: Save validated media and player
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          if ! git diff --cached --quiet; then
+            git commit -m "Fix stale video state and publish twelve decoder-independent moving scenes"
+            git push origin HEAD:main
+          fi
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload verified site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./docs
+      - name: Deploy the complete repair
+        id: deployment
+        uses: actions/deploy-pages@v4
