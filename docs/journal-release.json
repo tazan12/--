@@ -1,5 +1,5 @@
 {
-  "release": "mind-20261114-1",
+  "release": "focus-20261114-2",
   "storageSchema": 1,
   "journal": "local-only",
   "mediaEngine": "20261114-stable3",
@@ -12,5 +12,6 @@
     "favorites",
     "sleep timer",
     "offline-shell"
-  ]
+  ],
+  "journalAudio": "classical-only, explicit persistent on/off"
 }

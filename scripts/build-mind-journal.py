@@ -105,3 +105,8 @@ assert "$('noteSave')" not in player and 'DJ_PLAYER' in player
 assert (DOCS/'scenery.js').is_file()
 (DOCS/'journal-release.json').write_text(json.dumps({'release':VERSION,'storageSchema':1,'journal':'local-only','mediaEngine':'20261114-stable3','features':['dated journal','calendar','moods','themes','backup-restore','favorites','sleep timer','offline-shell']},indent=2),encoding='utf-8')
 print('PASS: journal integrated; one preserved video element; all UI element references resolve.')
+
+# JOURNAL_FOCUS_POSTBUILD
+import runpy
+focus=ROOT/"scripts"/"journal-focus"/"refine.py"
+if focus.exists(): runpy.run_path(str(focus),run_name="__main__")

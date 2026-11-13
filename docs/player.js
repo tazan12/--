@@ -16,6 +16,8 @@
   const scenes = ['달빛이 머무는 밤', '꽃잎이 흔들리는 오후', '창가에 내리는 비', '흰 꽃의 작은 인사', '별빛이 흐르는 호수', '분홍빛 꽃바람', '해변에 닿는 파도', '산과 아침 구름', '저녁빛을 담은 바다', '햇살 가득한 초원', '눈 내리는 겨울 숲', '느리게 지나가는 구름'];
   let index = 0, filter = '전체', phase = 'idle', wanted = false, ticket = 0;
   let transition = 0, fade = 0, loadTimer = 0, toastTimer = 0, fallbackUsed = false;
+  /* JOURNAL_FOCUS_AUDIO_V1 */
+  let journalMode = false, journalSoundEnabled = true;
   let volume = 0.75;
   try {
     const savedVolume = Number(localStorage.getItem('dj-letter-volume'));
@@ -49,12 +51,15 @@
     $('duration').textContent = known ? clock(audio.duration) : '0:00';
     $('seek').value = known ? Math.round(1000 * audio.currentTime / audio.duration) : 0;
     $('seek').setAttribute('aria-valuetext', `${$('clock').textContent} / ${$('duration').textContent}`);
+    window.dispatchEvent(new Event('dj-player-change'));
   }
   function originalMusicURL(url) {
     const match = url.match(/^(https:\/\/upload\.wikimedia\.org\/wikipedia\/commons)\/transcoded\/([^/]+\/[^/]+\/[^/]+)\/[^/]+$/);
     return match ? `${match[1]}/${match[2]}` : '';
   }
   function playProgram() {
+    if (journalMode && !journalSoundEnabled) { invalidateAudio(); updateControls(); return; }
+    if (journalMode && phase === 'dj') { beginMusic(); return; }
     const expected = ticket, expectedPhase = phase;
     wanted = true;
     clearTimeout(loadTimer);
@@ -78,12 +83,14 @@
     updateControls(); retryFilm();
   }
   function startNarration() {
+    if (journalMode) { if (journalSoundEnabled) beginMusic(); return; }
     scenery.userStart();
     invalidateAudio(); phase = 'dj'; fallbackUsed = false;
     $('musicSource').hidden = true; audio.src = mediaPath('voice', index, 'mp3');
     audio.volume = volume; audioStatus('오늘의 편지를 준비합니다.'); playProgram();
   }
   function beginMusic() {
+    if (journalMode && !journalSoundEnabled) { invalidateAudio(); updateControls(); return; }
     invalidateAudio(); phase = 'music'; fallbackUsed = false;
     $('musicSource').hidden = true; audio.src = stories[index].src; audio.volume = volume;
     audioStatus('클래식 연주를 준비합니다.'); playProgram();
@@ -105,6 +112,11 @@
     transition = setTimeout(() => { if (wanted && phase === 'transition' && expected === ticket) beginMusic(); }, 1800);
   }
   function toggleProgram() {
+    if (journalMode) {
+      if (wanted || !audio.paused) { journalSoundEnabled=false; invalidateAudio(); audioStatus('음악을 끄고, 조용히 기록합니다.'); updateControls(); }
+      else { journalSoundEnabled=true; if (phase==='music' && audio.getAttribute('src') && !audio.ended && !audio.error) playProgram(); else beginMusic(); }
+      return;
+    }
     scenery.userStart();
     if (phase === 'idle' || phase === 'complete') { startNarration(); return; }
     if (phase === 'transition') {
@@ -197,7 +209,25 @@
     pause() {
       invalidateAudio(); audioStatus('음악을 잠시 쉬어 둡니다.'); updateControls();
     },
-    state() { return {episode:index,phase,playing:!audio.paused,wanted}; }
+    // Journal uses only these explicit, narration-free operations.
+    journal(active, enabled=true) {
+      journalMode=Boolean(active);
+      if (!journalMode) { updateControls(); return; }
+      journalSoundEnabled=Boolean(enabled);
+      if (!journalSoundEnabled) { invalidateAudio(); audioStatus('음악을 끄고, 조용히 기록합니다.'); updateControls(); return; }
+      if (phase==='music' && audio.getAttribute('src') && !audio.ended && !audio.error) {
+        if (audio.paused) playProgram(); else updateControls();
+      } else beginMusic();
+    },
+    music(n=index, autoplay=true) {
+      if (!Number.isInteger(n) || n<0 || n>=stories.length) return;
+      if (journalMode) journalSoundEnabled=Boolean(autoplay);
+      if (n!==index) setEpisode(n);
+      if (!autoplay) { invalidateAudio(); updateControls(); return; }
+      if (phase==='music' && audio.getAttribute('src') && !audio.ended && !audio.error) playProgram();
+      else beginMusic();
+    },
+    state() { return {episode:index,phase,playing:!audio.paused,wanted,journalMode,journalSoundEnabled}; }
   });
   setEpisode(0); renderMoods();
 })();
