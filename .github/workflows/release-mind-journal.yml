@@ -32,6 +32,7 @@ jobs:
           python3 scripts/mind-journal/sustainability.py
           python3 scripts/build-mind-journal.py
           python3 scripts/mind-journal/maintenance.py
+          git restore -- .github/workflows
       - name: Validate storage safety and unchanged media
         run: |
           node --check docs/player.js
@@ -40,7 +41,7 @@ jobs:
           node --check docs/mind-journal.js
           node --check docs/sw.js
           node --test tests/mind-store.test.cjs
-          git diff --exit-code -- docs/assets/films docs/assets/voice docs/episodes.js
+          git diff --exit-code -- docs/assets/films docs/assets/voice docs/episodes.js .github/workflows
           python3 - <<'PY'
           import json,re
           from pathlib import Path
@@ -65,7 +66,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs scripts/mind-journal README.md MAINTENANCE.md .github/workflows maintenance
+          git add docs scripts/mind-journal README.md MAINTENANCE.md maintenance
           if ! git diff --cached --quiet; then
             git commit -m "Release dated private mind journal, mobile themes and sustainable offline shell"
             git push origin HEAD:main
