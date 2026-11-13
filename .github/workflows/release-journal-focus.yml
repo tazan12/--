@@ -1,0 +1,68 @@
+name: DJ Letter - Quiet writing release
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/journal-focus/**'
+      - 'tests/journal-music.test.cjs'
+      - '.github/workflows/release-journal-focus.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout the authorized DJ Letter repository
+        uses: actions/checkout@v4
+      - name: Build journal audio and layout refinement
+        run: python3 scripts/journal-focus/refine.py
+      - name: Verify storage, music routing, syntax and media preservation
+        run: |
+          node --check docs/player.js
+          node --check docs/mind-journal.js
+          node --check docs/sw.js
+          node --test tests/mind-store.test.cjs tests/journal-music.test.cjs
+          git diff --exit-code -- docs/mind-store.js docs/scenery.js docs/episodes.js docs/assets/
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          d=Path('docs');h=(d/'index.html').read_text()
+          assert h.count('<video ')==1
+          assert 'filmToggle' not in h
+          assert 'id="journalMusicToggle"' in h
+          assert 'id="journalBody"' in h
+          assert 'focus-20261114-2' in h
+          ids=re.findall(r'\bid="([^"]+)"',h)
+          assert len(ids)==len(set(ids))
+          assert (d/'journal-focus.css').is_file()
+          assert 'journal-focus.css' in (d/'sw.js').read_text()
+          print('PASS: existing diaries and all scenery/audio assets preserved')
+          PY
+      - name: Save the verified implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/ scripts/build-mind-journal.py
+          if ! git diff --cached --quiet; then
+            git commit -m "Release a writing-first journal with classical-only audio and explicit sound off"
+            git push origin HEAD:main
+          fi
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload complete verified release
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./docs
+      - name: Deploy the public website
+        id: deployment
+        uses: actions/deploy-pages@v4
